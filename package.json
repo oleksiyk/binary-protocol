@@ -1,0 +1,32 @@
+{
+    "name": "binary-protocol",
+    "description": "buffer maker and parser for binary protocols",
+    "homepage": "http://github.com/oleksiyk/binary-protocol",
+    "author": {
+        "name": "Oleksiy Krivoshey",
+        "email": "oleksiyk@gmail.com"
+    },
+    "version": "0.0.1",
+    "main": "./lib/index.js",
+    "keywords": ["buffer"],
+    "dependencies": {
+        "lodash": "~=3.10.1"
+    },
+    "devDependencies": {
+        "mocha": "~=2.3.4",
+        "chai": "~=3.4.1"
+    },
+    "bugs": {
+        "url": "https://github.com/oleksiyk/binary-protocol/issues"
+    },
+    "scripts": {
+        "test": "make test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/oleksiyk/binary-protocol.git"
+    },
+    "readme": "buffer maker and parser for binary protocols",
+    "readmeFilename": "README.md",
+    "license": "MIT"
+}
