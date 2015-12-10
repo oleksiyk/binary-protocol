@@ -10,7 +10,8 @@
     "main": "./lib/index.js",
     "keywords": ["buffer"],
     "dependencies": {
-        "lodash": "~=3.10.1"
+        "lodash": "~=3.10.1",
+        "long": "~=3.0.1"
     },
     "devDependencies": {
         "mocha": "~=2.3.4",
