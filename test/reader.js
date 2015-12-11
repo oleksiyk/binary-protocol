@@ -1,6 +1,6 @@
 "use strict";
 
-/* global before, describe, it */
+/* global expect, before, describe, it */
 
 var protocol = require('../lib/index');
 
@@ -139,6 +139,44 @@ describe('Reader', function() {
             reader.loopArrayEnd('items').result.should.be.eql({
                 items: [ 2, 3, 4 ]
             });
+        });
+    });
+
+    it('primitive method should throw RangeError when trying to read beyond buffer length', function () {
+        var reader, buffer = new Buffer('abcde');
+
+        reader = new protocol.Reader(buffer);
+        expect(function () {
+            reader.loop('chars', reader.Int8, 6);
+        }).to.throw(RangeError);
+    });
+
+    it('raw() should throw RangeError when trying to read beyond buffer length', function () {
+        var reader, buffer = new Buffer('abcde');
+
+        reader = new protocol.Reader(buffer);
+        expect(function () {
+            reader.raw('chars', 6);
+        }).to.throw(RangeError);
+    });
+
+    it.skip('should discard last empty context on RangeError', function () {
+        var reader, buffer = new Buffer('abcde');
+
+        protocol.define('char', {
+            read: function (context) {
+                this.Int8('char');
+                return String.fromCharCode(context.char);
+            }
+        });
+
+        reader = new protocol.Reader(buffer);
+        expect(function () {
+            reader.loop('chars', reader.char, 6);
+        }).to.throw(RangeError);
+
+        reader.result.should.be.eql({
+            chars: ['a', 'b', 'c', 'd', 'e']
         });
     });
 
