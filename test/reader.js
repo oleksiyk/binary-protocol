@@ -118,6 +118,28 @@ describe('Reader', function() {
                 items: [ 2, 3, 4 ]
             });
         });
+
+        it('loop() should stop when end() is called', function () {
+            protocol.define('loopArrayEnd', {
+                read: function (context) {
+                    var i = 0;
+                    this
+                        .Int32BE('length')
+                        .loop('items', function (end) {
+                            this.Int32BE();
+                            if(i++ === 2){
+                                end();
+                            }
+                        });
+                    return context.items;
+                }
+            });
+
+            reader = new protocol.Reader(buffer);
+            reader.loopArrayEnd('items').result.should.be.eql({
+                items: [ 2, 3, 4 ]
+            });
+        });
     });
 
 });

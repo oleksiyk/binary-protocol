@@ -40,11 +40,91 @@ describe('Writer', function() {
             });
         });
 
-        it.skip('should write raw bytes', function () {
-            var reader, buffer = new Buffer('abcde');
+        it('should write raw bytes from buffer', function () {
+            var writer, buffer = new Buffer([1, 2, 3, 4]);
 
-            reader = new protocol.Reader(buffer);
-            reader.raw('bytes', 5).result.bytes.toString('utf8').should.be.eql('abcde');
+            writer = new protocol.Writer();
+            writer.raw(buffer).result().toJSON().should.be.eql([1, 2, 3, 4]);
+        });
+
+        it('should write raw bytes from string', function () {
+            var writer, string = 'abcde';
+
+            writer = new protocol.Writer();
+            writer.raw(string).result().toString('utf8').should.be.eql('abcde');
+        });
+
+        it('should write raw bytes from array of octets', function () {
+            var writer, array = [1, 2, 3, 4];
+
+            writer = new protocol.Writer();
+            writer.raw(array).result().toJSON().should.be.eql([1, 2, 3, 4]);
+        });
+    });
+
+    describe('arrays (loop)', function () {
+        var writer;
+
+        it('should write custom array', function () {
+            protocol.define('customArray', {
+                write: function (values) {
+                    var i = 0;
+                    this
+                        .Int32BE(values.length);
+
+                    for(i = 0; i<values.length; i++){
+                        this.Int32BE(values[i]);
+                    }
+                }
+            });
+
+            writer = new protocol.Writer();
+            writer.customArray([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]);
+        });
+
+        it('should write arrays with loop() method', function () {
+            protocol.define('loopArray', {
+                write: function (values) {
+                    this
+                        .Int32BE(values.length)
+                        .loop(values, this.Int32BE);
+                }
+            });
+
+            writer = new protocol.Writer();
+            writer.loopArray([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]);
+        });
+
+        it('loop should honour iterations argument', function () {
+            protocol.define('loopArrayIterations', {
+                write: function (values) {
+                    this
+                        .Int32BE(values.length)
+                        .loop(values, this.Int32BE, 2);
+                }
+            });
+
+            writer = new protocol.Writer();
+            writer.loopArrayIterations([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]);
+        });
+
+        it('loop should stop when end() called', function () {
+            protocol.define('loopArrayEnd', {
+                write: function (values) {
+                    var i = 0;
+                    this
+                        .Int32BE(values.length)
+                        .loop(values, function (value, end) {
+                            this.Int32BE(value);
+                            if(i++ === 1){
+                                end();
+                            }
+                        });
+                }
+            });
+
+            writer = new protocol.Writer();
+            writer.loopArrayEnd([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]);
         });
     });
 
