@@ -21,7 +21,7 @@ You can build your own type definitions based on the following methods:
 * DoubleLE
 * DoubleB
 
-Int64 support (using long.js):
+Int64 support (using [long.js](https://github.com/dcodeIO/long.js)):
 * Int64BE
 * Int64LE
 
