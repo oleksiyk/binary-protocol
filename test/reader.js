@@ -84,16 +84,16 @@ describe('Reader', function() {
 
         it('should allow custom array results', function () {
             protocol.define('customArray', {
-                read: function (context) {
+                read: function () {
                     var i = 0;
                     this
                         .Int32BE('length');
 
-                    for(i = 0; i<context.length; i++){
+                    for(i = 0; i<this.context.length; i++){
                         this.Int32BE('items[' + i + ']');
                     }
 
-                    return context.items;
+                    return this.context.items;
                 }
             });
 
@@ -105,11 +105,11 @@ describe('Reader', function() {
 
         it('should build arrays with loop() method', function () {
             protocol.define('loopArray', {
-                read: function (context) {
+                read: function () {
                     this
                         .Int32BE('length')
-                        .loop('items', this.Int32BE, context.length);
-                    return context.items;
+                        .loop('items', this.Int32BE, this.context.length);
+                    return this.context.items;
                 }
             });
 
@@ -121,7 +121,7 @@ describe('Reader', function() {
 
         it('loop() should stop when end() is called', function () {
             protocol.define('loopArrayEnd', {
-                read: function (context) {
+                read: function () {
                     var i = 0;
                     this
                         .Int32BE('length')
@@ -131,7 +131,7 @@ describe('Reader', function() {
                                 end();
                             }
                         });
-                    return context.items;
+                    return this.context.items;
                 }
             });
 
@@ -160,13 +160,13 @@ describe('Reader', function() {
         }).to.throw(RangeError);
     });
 
-    it.skip('should discard last empty context on RangeError', function () {
+    it('should discard last empty context on RangeError', function () {
         var reader, buffer = new Buffer('abcde');
 
         protocol.define('char', {
-            read: function (context) {
+            read: function () {
                 this.Int8('char');
-                return String.fromCharCode(context.char);
+                return String.fromCharCode(this.context.char);
             }
         });
 
