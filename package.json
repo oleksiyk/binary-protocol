@@ -1,5 +1,5 @@
 {
-    "name": "binary-protocol",
+    "name": "bin-protocol",
     "description": "buffer maker and parser for binary protocols",
     "homepage": "http://github.com/oleksiyk/binary-protocol",
     "author": {
