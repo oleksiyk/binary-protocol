@@ -1,4 +1,4 @@
-# Zk
+# binary-protocol
 
 [![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.png)](https://travis-ci.org/oleksiyk/binary-protocol)
 
