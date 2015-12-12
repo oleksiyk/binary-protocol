@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.png)](https://travis-ci.org/oleksiyk/binary-protocol)
 
 binary-protocol is a library for parsing and creating arbitrary byte buffers. It was primary created for Apache Kafka protocol.
+
 You can build your own type definitions based on the following methods:
 
 * Int8
