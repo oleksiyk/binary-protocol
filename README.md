@@ -56,20 +56,6 @@ console.log(reader.result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
 ```javascript
 var protocol = require('bin-protocol');
 
-var reader = new protocol.Reader(new Buffer([0, 1, 2, 3]));
-
-reader
-    .Int8('num1')
-    .Int8('num2')
-    .Int8('num3')
-    .Int8('num4');
-
-console.log(reader.result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
-```
-
-```javascript
-var protocol = require('bin-protocol');
-
 protocol.define('char', {
     read: function () {
         this.Int8('char');
