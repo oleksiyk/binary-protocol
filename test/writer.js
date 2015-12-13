@@ -26,7 +26,7 @@ describe('Writer', function() {
 
         primitives.forEach(function (p) {
             it('should write ' + p[0], function () {
-                var writer, buffer = new Buffer(2 * p[1]), num1, num2;
+                var buffer = new Buffer(2 * p[1]), num1, num2;
                 if(p[0].indexOf('U') !== 0){ // signed
                     num1 = -123; num2 = 123;
                 } else { // unsigned
@@ -35,16 +35,14 @@ describe('Writer', function() {
                 buffer['write' + p[0]](num1, 0);
                 buffer['write' + p[0]](num2, p[1]);
 
-                writer = new protocol.Writer();
-                writer[p[0]](num1)[p[0]](num2).result().should.be.eql(buffer);
+                protocol.write()[p[0]](num1)[p[0]](num2).result().should.be.eql(buffer);
             });
         });
 
         it('should write raw bytes from buffer', function () {
-            var writer, buffer = new Buffer([1, 2, 3, 4]);
+            var buffer = new Buffer([1, 2, 3, 4]);
 
-            writer = new protocol.Writer();
-            writer.raw(buffer).result().toJSON().should.be.eql([1, 2, 3, 4]);
+            protocol.write().raw(buffer).result().toJSON().should.be.eql([1, 2, 3, 4]);
         });
 
         it('should write raw bytes from string', function () {

@@ -71,8 +71,7 @@ describe('Reader', function() {
                 }
             });
 
-            reader = new protocol.Reader(buffer);
-            reader.Int32BE('a0').nested('nested').result.should.be.eql({
+            protocol.read(buffer).Int32BE('a0').nested('nested').result.should.be.eql({
                 a0: 3,
                 nested: {
                     a1: 2,
@@ -113,8 +112,7 @@ describe('Reader', function() {
                 }
             });
 
-            reader = new protocol.Reader(buffer);
-            reader.loopArray('items').result.should.be.eql({
+            protocol.read(buffer).loopArray('items').result.should.be.eql({
                 items: [ 2, 3, 4 ]
             });
         });
@@ -135,8 +133,7 @@ describe('Reader', function() {
                 }
             });
 
-            reader = new protocol.Reader(buffer);
-            reader.loopArrayEnd('items').result.should.be.eql({
+            protocol.read(buffer).loopArrayEnd('items').result.should.be.eql({
                 items: [ 2, 3, 4 ]
             });
         });
