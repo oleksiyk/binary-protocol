@@ -160,7 +160,7 @@ describe('Reader', function() {
         }).to.throw(RangeError);
     });
 
-    it('should discard last empty context on RangeError', function () {
+    it('methods should be chainable', function () {
         var reader, buffer = new Buffer('abcde');
 
         protocol.define('char', {
@@ -171,13 +171,7 @@ describe('Reader', function() {
         });
 
         reader = new protocol.Reader(buffer);
-        expect(function () {
-            reader.loop('chars', reader.char, 6);
-        }).to.throw(RangeError);
-
-        reader.result.should.be.eql({
-            chars: ['a', 'b', 'c', 'd', 'e']
-        });
+        reader.skip(1).demand(1).loop('chars', reader.char, 4).result.should.be.eql({chars: ['b', 'c', 'd', 'e']});
     });
 
 });

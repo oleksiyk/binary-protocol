@@ -128,4 +128,17 @@ describe('Writer', function() {
         });
     });
 
+    it('methods should be chainable', function () {
+        var writer;
+
+        protocol.define('char', {
+            write: function (char) {
+                this.Int8(char.charCodeAt(0));
+            }
+        });
+
+        writer = new protocol.Writer();
+        writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().toJSON().should.be.eql([97, 98, 99, 100]);
+    });
+
 });
