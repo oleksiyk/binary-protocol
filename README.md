@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.png)](https://travis-ci.org/oleksiyk/binary-protocol)
 
-bin-protocol is a library for parsing and creating arbitrary byte buffers. It was primary created for Apache Kafka protocol.
+bin-protocol is a library for parsing and creating arbitrary byte buffers. It was created for [Apache Kafka client](https://github.com/oleksiyk/kafka).
 
 You can build your own type definitions based on the following methods:
 
