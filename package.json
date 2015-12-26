@@ -6,7 +6,7 @@
         "name": "Oleksiy Krivoshey",
         "email": "oleksiyk@gmail.com"
     },
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/index.js",
     "keywords": ["buffer"],
     "dependencies": {
@@ -25,9 +25,8 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/oleksiyk/binary-protocol.git"
+        "url": "http://github.com/oleksiyk/binary-protocol.git"
     },
-    "readme": "buffer maker and parser for binary protocols",
     "readmeFilename": "README.md",
     "license": "MIT"
 }
