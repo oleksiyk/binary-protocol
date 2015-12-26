@@ -154,7 +154,7 @@ protocol.define('customArray', {
         this.Int32BE('length');
 
         for(i = 0; i<this.context.length; i++){
-            this.Int32BE('items[' + i + ']');
+            this.Int32BE('items[' + i + ']'); // yes, this works
         }
 
         return this.context.items;
