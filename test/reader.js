@@ -120,12 +120,12 @@ describe('Reader', function() {
         it('loop() should stop when end() is called', function () {
             protocol.define('loopArrayEnd', {
                 read: function () {
-                    var i = 0;
-                    this
-                        .Int32BE('length')
-                        .loop('items', function (end) {
+                    var len;
+                    this.Int32BE('length');
+                    len = this.context.length;
+                    this.loop('items', function (end) {
                             this.Int32BE();
-                            if(i++ === 2){
+                            if((len -= 1) === 0){
                                 end();
                             }
                         });
