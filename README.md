@@ -63,7 +63,7 @@ var protocol = require('bin-protocol');
 protocol.define('char', {
     read: function () {
         this.Int8('char');
-        return String.fromCharCode(this.context.char);
+        return String.fromCharCode(this.context.char); // convert from char code to character
     }
 });
 
@@ -71,15 +71,14 @@ protocol.define('array', {
     read: function () {
         this
             .Int8('length')
-            .loop('items', this.char, this.context.length);
-        return this.context.items;
+            .loop('items', this.char, this.context.length); // read 'length' characters with above defined 'char' method
+        return this.context.items; // return just items, without 'length' property
     }
 });
 
 var reader = new protocol.Reader(new Buffer([5, 97, 98, 99, 100, 101]));
 
-reader
-    .array('chars');
+reader.array('chars');
 
 console.log(reader.result); // => { chars: [ 'a', 'b', 'c', 'd', 'e' ] }
 ```
@@ -98,12 +97,13 @@ var buffer = writer.result();
 console.log(buffer); // => <Buffer 01 02 03>
 ```
 
+Define an array data type which first writes data array length as a single byte
 ```javascript
 protocol.define('array', {
     write: function (values) {
         this
             .Int8(values.length)
-            .loop(values, this.Int8);
+            .loop(values, this.Int8); // write all values with Int8 method
     }
 });
 
@@ -138,6 +138,56 @@ protocol.define('bytes', {
                 throw new Error('Kafka bytes value should be a Buffer or String');
             }
         }
+    }
+});
+```
+
+### Loops (arrays)
+
+All next 3 examples are essentialy identical:
+
+Read data with your own code:
+```javascript
+protocol.define('customArray', {
+    read: function () {
+        var i = 0;
+        this.Int32BE('length');
+
+        for(i = 0; i<this.context.length; i++){
+            this.Int32BE('items[' + i + ']');
+        }
+
+        return this.context.items;
+    }
+});
+```
+
+Read with `.loop()` method by providing the length (loop count):
+```javascript
+protocol.define('loopArray', {
+    read: function () {
+        this
+            .Int32BE('length')
+            .loop('items', this.Int32BE, this.context.length);
+        return this.context.items;
+    }
+});
+```
+
+Read with `.loop()` method until the `end()` is called:
+```javascript
+protocol.define('loopArrayEnd', {
+    read: function () {
+        var len;
+        this.Int32BE('length');
+        len = this.context.length;
+        this.loop('items', function (end) {
+                this.Int32BE();
+                if((len -= 1) === 0){
+                    end(); // call end() to break from loop
+                }
+            });
+        return this.context.items;
     }
 });
 ```
