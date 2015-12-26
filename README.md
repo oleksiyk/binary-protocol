@@ -39,6 +39,8 @@ $ npm install bin-protocol
 
 ### Reader examples
 
+Built-in metods:
+
 ```javascript
 var protocol = require('bin-protocol');
 
@@ -52,6 +54,8 @@ reader
 
 console.log(reader.result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
 ```
+
+Define custom 'char' and 'array' methods:
 
 ```javascript
 var protocol = require('bin-protocol');
@@ -110,7 +114,35 @@ writer.array([2, 3, 4]);
 console.log(writer.result()); // => <Buffer 03 02 03 04>
 ```
 
-See tests for more.
+Define reader and writer methods together, this one writes (or reads) raw buffer preceeded by its length as 32 bit integer.
+
+```javascript
+protocol.define('bytes', {
+    read: function() {
+        this.Int32BE('length');
+        if(this.context.length <= 0){
+            return null;
+        }
+        this.raw('value', this.context.length);
+        return this.context.value;
+    },
+    write: function(value) {
+        if (value === undefined || value === null) {
+            this.Int32BE(-1);
+        } else {
+            if(Buffer.isBuffer(value) || typeof value === 'string'){
+                this
+                    .Int32BE(value.length)
+                    .raw(value);
+            } else {
+                throw new Error('Kafka bytes value should be a Buffer or String');
+            }
+        }
+    }
+});
+```
+
+See [Kafka protocol](https://github.com/oleksiyk/kafka/tree/master/lib/protocol) for more examples.
 
 # License (MIT)
 
