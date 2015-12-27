@@ -42,7 +42,7 @@ describe('Writer', function() {
         it('should write raw bytes from buffer', function () {
             var buffer = new Buffer([1, 2, 3, 4]);
 
-            protocol.write().raw(buffer).result().toJSON().should.be.eql([1, 2, 3, 4]);
+            protocol.write().raw(buffer).result().should.be.eql(buffer);
         });
 
         it('should write raw bytes from string', function () {
@@ -56,7 +56,7 @@ describe('Writer', function() {
             var writer, array = [1, 2, 3, 4];
 
             writer = new protocol.Writer();
-            writer.raw(array).result().toJSON().should.be.eql([1, 2, 3, 4]);
+            writer.raw(array).result().should.be.eql(new Buffer(array));
         });
     });
 
@@ -77,7 +77,7 @@ describe('Writer', function() {
             });
 
             writer = new protocol.Writer();
-            writer.customArray([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]);
+            writer.customArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
         });
 
         it('should write arrays with loop() method', function () {
@@ -90,7 +90,7 @@ describe('Writer', function() {
             });
 
             writer = new protocol.Writer();
-            writer.loopArray([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]);
+            writer.loopArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
         });
 
         it('loop should honour iterations argument', function () {
@@ -103,7 +103,7 @@ describe('Writer', function() {
             });
 
             writer = new protocol.Writer();
-            writer.loopArrayIterations([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]);
+            writer.loopArrayIterations([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
         });
 
         it('loop should stop when end() called', function () {
@@ -122,7 +122,7 @@ describe('Writer', function() {
             });
 
             writer = new protocol.Writer();
-            writer.loopArrayEnd([2, 3, 4]).result().toJSON().should.be.eql([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]);
+            writer.loopArrayEnd([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
         });
     });
 
@@ -136,7 +136,7 @@ describe('Writer', function() {
         });
 
         writer = new protocol.Writer();
-        writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().toJSON().should.be.eql([97, 98, 99, 100]);
+        writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().should.be.eql(new Buffer([97, 98, 99, 100]));
     });
 
 });
