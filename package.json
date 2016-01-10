@@ -6,9 +6,9 @@
         "name": "Oleksiy Krivoshey",
         "email": "oleksiyk@gmail.com"
     },
-    "version": "1.0.4",
+    "version": "1.0.5",
     "main": "./lib/index.js",
-    "keywords": ["buffer"],
+    "keywords": ["buffer", "raw", "binary", "protocol", "parser", "reader", "builder"],
     "dependencies": {
         "lodash": "~=3.10.1",
         "long": "~=3.0.1"
