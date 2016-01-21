@@ -1,12 +1,11 @@
-"use strict";
+'use strict';
 
 /* global describe, it */
 
 var protocol = require('../lib/index');
 
-describe('Writer', function() {
-
-    describe('primitives', function() {
+describe('Writer', function () {
+    describe('primitives', function () {
         var primitives = [
             ['Int8', 1],
             ['UInt8', 1],
@@ -27,7 +26,7 @@ describe('Writer', function() {
         primitives.forEach(function (p) {
             it('should write ' + p[0], function () {
                 var buffer = new Buffer(2 * p[1]), num1, num2;
-                if(p[0].indexOf('U') !== 0){ // signed
+                if (p[0].indexOf('U') !== 0) { // signed
                     num1 = -123; num2 = 123;
                 } else { // unsigned
                     num1 = 123; num2 = 123;
@@ -70,7 +69,7 @@ describe('Writer', function() {
                     this
                         .Int32BE(values.length);
 
-                    for(i = 0; i<values.length; i++){
+                    for (i = 0; i < values.length; i++) {
                         this.Int32BE(values[i]);
                     }
                 }
@@ -114,7 +113,7 @@ describe('Writer', function() {
                         .Int32BE(values.length)
                         .loop(values, function (value, end) {
                             this.Int32BE(value);
-                            if(i++ === 1){
+                            if (i++ === 1) {
                                 end();
                             }
                         });
@@ -138,5 +137,4 @@ describe('Writer', function() {
         writer = new protocol.Writer();
         writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().should.be.eql(new Buffer([97, 98, 99, 100]));
     });
-
 });

@@ -1,12 +1,11 @@
-"use strict";
+'use strict';
 
 /* global expect, before, describe, it */
 
 var protocol = require('../lib/index');
 
-describe('Reader', function() {
-
-    describe('primitives', function() {
+describe('Reader', function () {
+    describe('primitives', function () {
         var primitives = [
             ['Int8', 1],
             ['UInt8', 1],
@@ -27,7 +26,7 @@ describe('Reader', function() {
         primitives.forEach(function (p) {
             it('should read ' + p[0], function () {
                 var reader, buffer = new Buffer(2 * p[1]), num1, num2;
-                if(p[0].indexOf('U') !== 0){ // signed
+                if (p[0].indexOf('U') !== 0) { // signed
                     num1 = -123; num2 = 123;
                 } else { // unsigned
                     num1 = 123; num2 = 123;
@@ -88,7 +87,7 @@ describe('Reader', function() {
                     this
                         .Int32BE('length');
 
-                    for(i = 0; i<this.context.length; i++){
+                    for (i = 0; i < this.context.length; i++) {
                         this.Int32BE('items[' + i + ']');
                     }
 
@@ -98,7 +97,7 @@ describe('Reader', function() {
 
             reader = new protocol.Reader(buffer);
             reader.customArray('items').result.should.be.eql({
-                items: [ 2, 3, 4 ]
+                items: [2, 3, 4]
             });
         });
 
@@ -113,7 +112,7 @@ describe('Reader', function() {
             });
 
             protocol.read(buffer).loopArray('items').result.should.be.eql({
-                items: [ 2, 3, 4 ]
+                items: [2, 3, 4]
             });
         });
 
@@ -124,17 +123,15 @@ describe('Reader', function() {
                     this.Int32BE('length');
                     len = this.context.length;
                     this.loop('items', function (end) {
-                            this.Int32BE();
-                            if((len -= 1) === 0){
-                                end();
-                            }
-                        });
+                        this.Int32BE();
+                        if ((len -= 1) === 0) { end(); }
+                    });
                     return this.context.items;
                 }
             });
 
             protocol.read(buffer).loopArrayEnd('items').result.should.be.eql({
-                items: [ 2, 3, 4 ]
+                items: [2, 3, 4]
             });
         });
     });
@@ -168,7 +165,6 @@ describe('Reader', function() {
         });
 
         reader = new protocol.Reader(buffer);
-        reader.skip(1).demand(1).loop('chars', reader.char, 4).result.should.be.eql({chars: ['b', 'c', 'd', 'e']});
+        reader.skip(1).demand(1).loop('chars', reader.char, 4).result.should.be.eql({ chars: ['b', 'c', 'd', 'e'] });
     });
-
 });

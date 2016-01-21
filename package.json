@@ -15,7 +15,10 @@
     },
     "devDependencies": {
         "mocha": "~=2.3.4",
-        "chai": "~=3.4.1"
+        "chai": "~=3.4.1",
+        "eslint": "^1.10.3",
+        "eslint-config-airbnb": "^3.1.0",
+        "istanbul": "^0.4.2"
     },
     "bugs": {
         "url": "https://github.com/oleksiyk/binary-protocol/issues"

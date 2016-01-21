@@ -1,24 +1,26 @@
-all: node_modules
+ISTANBUL = ./node_modules/.bin/istanbul
+ESLINT = ./node_modules/.bin/eslint
+MOCHA = ./node_modules/.bin/mocha
 
-node_modules: package.json
-	@npm install
+all: lint test coverage
 
+# Tests
 test:
-	@mocha \
-		-b \
-		--require ./test/globals \
-		--recursive \
-		--reporter spec \
-		test
+	@$(ISTANBUL) cover --report text --report html _mocha
 
-#
+# Check code style
+lint:
+	@$(ESLINT) lib/**/*.js test/**/*.js
+
+# Check coverage levels
+coverage:
+	@$(ISTANBUL) check-coverage --statement 85 --branch 70 --function 85
+
 # Clean up
-#
+clean: clean-cov
 
-clean: clean-node clean-cov
+clean-cov:
+	@rm -rf coverage
 
-clean-node:
-	@rm -rf node_modules
+.PHONY: all test lint coverage clean clean-cov
 
-.PHONY: all
-.PHONY: test
