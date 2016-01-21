@@ -184,4 +184,15 @@ describe('Writer', function () {
         writer = new protocol.Writer();
         writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().should.be.eql(new Buffer([97, 98, 99, 100]));
     });
+
+    it('reset() should reset writer buffer', function () {
+        var writer = new protocol.Writer();
+        writer.Int8(1).reset().Int8(2).result().should.be.eql(new Buffer([2]));
+    });
+
+    it('should be able to grow buffer when needed', function () {
+        var writer = new protocol.Writer(1); // initial buffer is 1 byte
+        writer.buffer.length.should.be.eql(1);
+        writer.Int8(1).Int8(2).result().should.be.eql(new Buffer([1, 2]));
+    });
 });

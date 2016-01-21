@@ -191,4 +191,27 @@ describe('Reader', function () {
         reader = new protocol.Reader(buffer);
         reader.skip(1).demand(1).loop('chars', reader.char, 4).result.should.be.eql({ chars: ['b', 'c', 'd', 'e'] });
     });
+
+    it('should be possible to create dynamic fields', function () {
+        var reader, buffer = new Buffer(6);
+
+        buffer.write('xname');
+        buffer.writeInt8(10, 5);
+
+        protocol.define('dynamic', {
+            read: function () {
+                var r = {};
+                this
+                    .raw('field_name', 5)
+                    .Int8('field_value');
+                // create new field
+                r[this.context.field_name.toString('utf8')] = this.context.field_value;
+                this.context = r;
+            }
+        });
+
+        reader = new protocol.Reader(buffer);
+
+        reader.dynamic('obj').result.should.be.eql({ obj: { xname: 10 } });
+    });
 });
