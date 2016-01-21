@@ -24,6 +24,8 @@ You can build your own type definitions based on the following methods:
 Int64 support (using [long.js](https://github.com/dcodeIO/long.js)):
 * Int64BE
 * Int64LE
+* UInt64BE
+* UInt64LE
 
 Read or write raw bytes:
 * raw
