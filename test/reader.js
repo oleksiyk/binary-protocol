@@ -3,6 +3,7 @@
 /* global expect, before, describe, it */
 
 var protocol = require('../lib/index');
+var Long     = require('long');
 
 describe('Reader', function () {
     describe('primitives', function () {
@@ -47,6 +48,19 @@ describe('Reader', function () {
 
             reader = new protocol.Reader(buffer);
             reader.raw('bytes', 5).result.bytes.toString('utf8').should.be.eql('abcde');
+        });
+    });
+
+    describe('64 bits', function () {
+        var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF);
+        it('Int64BE', function () {
+            var buffer = new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+            protocol.read(buffer).Int64BE('long').result.long.toString().should.be.eql(slong.toString());
+        });
+
+        it('Int64LE', function () {
+            var buffer = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+            protocol.read(buffer).Int64LE('long').result.long.toString().should.be.eql(slong.toString());
         });
     });
 
