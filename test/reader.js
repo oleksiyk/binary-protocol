@@ -52,7 +52,7 @@ describe('Reader', function () {
     });
 
     describe('64 bits', function () {
-        var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF);
+        var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF), ulong = new Long(0xFFFFFFFF, 0x7FFFFFFF, true);
         it('Int64BE', function () {
             var buffer = new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
             protocol.read(buffer).Int64BE('long').result.long.toString().should.be.eql(slong.toString());
@@ -61,6 +61,16 @@ describe('Reader', function () {
         it('Int64LE', function () {
             var buffer = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
             protocol.read(buffer).Int64LE('long').result.long.toString().should.be.eql(slong.toString());
+        });
+
+        it('UInt64BE', function () {
+            var buffer = new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+            protocol.read(buffer).UInt64BE('long').result.long.toString().should.be.eql(ulong.toString());
+        });
+
+        it('UInt64LE', function () {
+            var buffer = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+            protocol.read(buffer).UInt64LE('long').result.long.toString().should.be.eql(ulong.toString());
         });
     });
 
