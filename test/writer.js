@@ -61,10 +61,18 @@ describe('Writer', function () {
     });
 
     describe('64 bits', function () {
-        var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF), ulong = new Long(0xFFFFFFFF, 0x7FFFFFFF, true), writer;
+        var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF),
+            ulong = new Long(0xFFFFFFFF, 0x7FFFFFFF, true),
+            MAX_NUM = 9007199254740991, MIN_NUM = -9007199254740991, writer;
+
         it('Int64BE', function () {
             writer = new protocol.Writer();
             writer.Int64BE(slong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+        });
+
+        it('Int64BE from number', function () {
+            writer = new protocol.Writer();
+            writer.Int64BE(MIN_NUM).result().should.be.eql(new Buffer([0XFF, 0XE0, 0X00, 0X00, 0X00, 0X00, 0X00, 0X01]));
         });
 
         it('Int64LE', function () {
@@ -72,14 +80,29 @@ describe('Writer', function () {
             writer.Int64LE(slong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
         });
 
+        it('Int64LE from number', function () {
+            writer = new protocol.Writer();
+            writer.Int64LE(MIN_NUM).result().should.be.eql(new Buffer([0X01, 0X00, 0X00, 0X00, 0X00, 0X00, 0XE0, 0XFF]));
+        });
+
         it('UInt64BE', function () {
             writer = new protocol.Writer();
             writer.UInt64BE(ulong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
         });
 
+        it('UInt64BE from number', function () {
+            writer = new protocol.Writer();
+            writer.UInt64BE(MAX_NUM).result().should.be.eql(new Buffer([0X00, 0X1F, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF]));
+        });
+
         it('UInt64LE', function () {
             writer = new protocol.Writer();
             writer.UInt64LE(ulong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
+        });
+
+        it('UInt64LE from number', function () {
+            writer = new protocol.Writer();
+            writer.UInt64LE(MAX_NUM).result().should.be.eql(new Buffer([0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0X1F, 0X00]));
         });
     });
 
