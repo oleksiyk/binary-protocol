@@ -8,7 +8,7 @@
             'ignoreComments': true
         }],
         'comma-dangle': 0,
-        'indent': [2, 4],
+        'indent': [2, 4, {"SwitchCase": 1}],
         'no-multi-spaces': [2, {
             'exceptions': {
                 'VariableDeclarator': true
@@ -20,7 +20,9 @@
         'new-cap': [2, { newIsCap: true, capIsNew: false }],
         'spaced-comment': 0,
         'key-spacing': [2, {'beforeColon': false, 'afterColon': true, mode: 'minimum'}],
-        'no-cond-assign': [2, 'except-parens']
+        'no-cond-assign': [2, 'except-parens'],
+        'no-bitwise': 0,
+        'camelcase': 0
     },
     'ecmaFeatures': {
         'modules': false,
