@@ -24,7 +24,7 @@
         "url": "https://github.com/oleksiyk/binary-protocol/issues"
     },
     "scripts": {
-        "test": "make test"
+        "test": "make"
     },
     "repository": {
         "type": "git",
