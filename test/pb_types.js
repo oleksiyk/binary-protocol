@@ -1,6 +1,6 @@
 'use strict';
 
-/* global describe, it */
+/* global describe, it, expect */
 
 var protocol = require('../lib/index');
 var Long     = require('long');
@@ -314,6 +314,27 @@ describe('Protocol buffers types', function () {
         var encoded = writer.pb_bytes(buf).result();
         encoded.should.be.eql(new Buffer([0x05, 0x61, 0x62, 0x63, 0x64, 0x65]));
         protocol.read(encoded).pb_bytes('v').result.v.should.be.eql(buf);
+    });
+
+    it('bytes - zero length', function () {
+        var buf = new Buffer(0);
+        var writer = new protocol.Writer();
+        var encoded = writer.pb_bytes(buf).result();
+        encoded.should.be.eql(new Buffer([0x00]));
+        expect(protocol.read(encoded).pb_bytes('v').result.v).to.be.eql(null);
+    });
+
+    it('bytes - null', function () {
+        var writer = new protocol.Writer();
+        var encoded = writer.pb_bytes(null).result();
+        encoded.should.be.eql(new Buffer([0x00]));
+        expect(protocol.read(encoded).pb_bytes('v').result.v).to.be.eql(null);
+    });
+
+    it('bytes - not a buffer', function () {
+        var writer = new protocol.Writer();
+        function f() {return writer.pb_bytes(123).result(); }
+        expect(f).to.throw(Error);
     });
 
     it('string', function () {

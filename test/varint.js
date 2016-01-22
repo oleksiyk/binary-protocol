@@ -45,16 +45,16 @@ describe('Varint', function () {
     });
 
     it('InvalidProtocolBufferException: Malformed varint', function () {
-        function t() {
-            return protocol.read(MALFORMED).UVarint('v').result;
-        }
+        function t() {return protocol.read(MALFORMED).UVarint('v').result; }
+        function t64() {return protocol.read(MALFORMED).UVarint64('v').result; }
         expect(t).to.throw('Malformed varint');
+        expect(t64).to.throw('Malformed varint');
     });
 
-    it('InvalidProtocolBufferException: Malformed varint', function () {
-        function t() {
-            return protocol.read(TRUNCATED).UVarint('v').result;
-        }
+    it('InvalidProtocolBufferException: Truncated message', function () {
+        function t() {return protocol.read(TRUNCATED).UVarint('v').result; }
+        function t64() {return protocol.read(TRUNCATED).UVarint64('v').result; }
         expect(t).to.throw('Truncated message');
+        expect(t64).to.throw('Truncated message');
     });
 });
