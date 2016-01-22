@@ -327,8 +327,7 @@ describe('Protocol buffers types', function () {
     it('bytes - null', function () {
         var writer = new protocol.Writer();
         var encoded = writer.pb_bytes(null).result();
-        encoded.should.be.eql(new Buffer([0x00]));
-        expect(protocol.read(encoded).pb_bytes('v').result.v).to.be.eql(null);
+        encoded.should.be.eql(new Buffer(0));
     });
 
     it('bytes - not a buffer', function () {
