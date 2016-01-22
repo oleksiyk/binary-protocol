@@ -46,11 +46,6 @@ describe('Protocol buffers types', function () {
             protocol.read(encoded).pb_int32('v').result.v.should.be.eql(MAX_INT32);
         });
 
-        // should be 10 bytes long
-        // https://developers.google.com/protocol-buffers/docs/encoding?hl=en#signed-integers
-        // Quote: "If you use int32 or int64 as the type for a negative number, the resulting varint is always ten bytes long – it is,
-        // effectively, treated like a very large unsigned integer.
-        // If you use one of the signed types, the resulting varint uses ZigZag encoding, which is much more efficient."
         it('int32 -1', function () {
             var writer = new protocol.Writer();
             var encoded = writer.pb_int32(-1).result();
@@ -322,10 +317,9 @@ describe('Protocol buffers types', function () {
     });
 
     it('string', function () {
-        var str = 'abcde';
+        var str = '人人生而自由，在尊嚴和權利上一律平等。';
         var writer = new protocol.Writer();
         var encoded = writer.pb_string(str).result();
-        encoded.should.be.eql(new Buffer([0x05, 0x61, 0x62, 0x63, 0x64, 0x65]));
         protocol.read(encoded).pb_string('v').result.v.should.be.eql(str);
     });
 });

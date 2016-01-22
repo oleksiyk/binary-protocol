@@ -49,7 +49,14 @@ describe('Writer', function () {
             var writer, string = 'abcde';
 
             writer = new protocol.Writer();
-            writer.raw(string).result().toString('utf8').should.be.eql('abcde');
+            writer.raw(string).result().toString('utf8').should.be.eql(string);
+        });
+
+        it('should write raw bytes from utf8 string', function () {
+            var writer, string = '人人生而自由，在尊嚴和權利上一律平等。';
+
+            writer = new protocol.Writer();
+            writer.raw(string).result().toString('utf8').should.be.eql(string);
         });
 
         it('should write raw bytes from array of octets', function () {
