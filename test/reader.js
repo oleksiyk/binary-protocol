@@ -214,4 +214,27 @@ describe('Reader', function () {
 
         reader.dynamic('obj').result.should.be.eql({ obj: { xname: 10 } });
     });
+
+    it('should assign properties to top context when top context has no name', function () {
+        var buffer = new Buffer(2);
+
+        buffer.writeInt8(1, 0);
+        buffer.writeInt8(2, 1);
+
+        protocol.define('_emptyname', {
+            read: function () {
+                this
+                    .Int8('f1')
+                    .Int8('f2');
+            }
+        });
+
+        protocol.define('emptyname', {
+            read: function () {
+                this._emptyname();
+            }
+        });
+
+        protocol.read(buffer).emptyname().result.should.be.eql({ f1: 1, f2: 2 });
+    });
 });
