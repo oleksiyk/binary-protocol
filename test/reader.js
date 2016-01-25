@@ -2,7 +2,7 @@
 
 /* global expect, before, describe, it */
 
-var protocol = require('../lib/index');
+var Protocol = require('../lib/index');
 var Long     = require('long');
 
 describe('Reader', function () {
@@ -26,7 +26,8 @@ describe('Reader', function () {
 
         primitives.forEach(function (p) {
             it('should read ' + p[0], function () {
-                var reader, buffer = new Buffer(2 * p[1]), num1, num2;
+                var protocol = new Protocol();
+                var buffer = new Buffer(2 * p[1]), num1, num2;
                 if (p[0].indexOf('U') !== 0) { // signed
                     num1 = -123; num2 = 123;
                 } else { // unsigned
@@ -35,8 +36,7 @@ describe('Reader', function () {
                 buffer['write' + p[0]](num1, 0);
                 buffer['write' + p[0]](num2, p[1]);
 
-                reader = new protocol.Reader(buffer);
-                reader[p[0]]('num1')[p[0]]('num2').result.should.be.eql({
+                protocol.read(buffer)[p[0]]('num1')[p[0]]('num2').result.should.be.eql({
                     num1: num1,
                     num2: num2
                 });
@@ -44,38 +44,41 @@ describe('Reader', function () {
         });
 
         it('should read raw bytes', function () {
-            var reader, buffer = new Buffer('abcde');
-
-            reader = new protocol.Reader(buffer);
-            reader.raw('bytes', 5).result.bytes.toString('utf8').should.be.eql('abcde');
+            var protocol = new Protocol();
+            var buffer = new Buffer('abcde');
+            protocol.read(buffer).raw('bytes', 5).result.bytes.toString('utf8').should.be.eql('abcde');
         });
     });
 
     describe('64 bits', function () {
         var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF), ulong = new Long(0xFFFFFFFF, 0x7FFFFFFF, true);
         it('Int64BE', function () {
+            var protocol = new Protocol();
             var buffer = new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
             protocol.read(buffer).Int64BE('long').result.long.toString().should.be.eql(slong.toString());
         });
 
         it('Int64LE', function () {
+            var protocol = new Protocol();
             var buffer = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
             protocol.read(buffer).Int64LE('long').result.long.toString().should.be.eql(slong.toString());
         });
 
         it('UInt64BE', function () {
+            var protocol = new Protocol();
             var buffer = new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
             protocol.read(buffer).UInt64BE('long').result.long.toString().should.be.eql(ulong.toString());
         });
 
         it('UInt64LE', function () {
+            var protocol = new Protocol();
             var buffer = new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
             protocol.read(buffer).UInt64LE('long').result.long.toString().should.be.eql(ulong.toString());
         });
     });
 
     describe('nested objects and arrays', function () {
-        var reader, buffer = new Buffer(16);
+        var buffer = new Buffer(16);
 
         before(function () {
             buffer.writeInt32BE(3, 0);
@@ -85,6 +88,7 @@ describe('Reader', function () {
         });
 
         it('should create nested result object', function () {
+            var protocol = new Protocol();
             protocol.define('nested', {
                 read: function () {
                     this
@@ -105,6 +109,7 @@ describe('Reader', function () {
         });
 
         it('should allow custom array results', function () {
+            var protocol = new Protocol();
             protocol.define('customArray', {
                 read: function () {
                     var i = 0;
@@ -119,13 +124,13 @@ describe('Reader', function () {
                 }
             });
 
-            reader = new protocol.Reader(buffer);
-            reader.customArray('items').result.should.be.eql({
+            protocol.read(buffer).customArray('items').result.should.be.eql({
                 items: [2, 3, 4]
             });
         });
 
         it('should build arrays with loop() method', function () {
+            var protocol = new Protocol();
             protocol.define('loopArray', {
                 read: function () {
                     this
@@ -141,6 +146,7 @@ describe('Reader', function () {
         });
 
         it('loop() should stop when end() is called', function () {
+            var protocol = new Protocol();
             protocol.define('loopArrayEnd', {
                 read: function () {
                     var len;
@@ -161,25 +167,26 @@ describe('Reader', function () {
     });
 
     it('primitive method should throw RangeError when trying to read beyond buffer length', function () {
-        var reader, buffer = new Buffer('abcde');
+        var protocol = new Protocol();
+        var buffer = new Buffer('abcde');
 
-        reader = new protocol.Reader(buffer);
         expect(function () {
-            reader.loop('chars', reader.Int8, 6);
+            protocol.read(buffer).loop('chars', protocol.reader.Int8, 6);
         }).to.throw(RangeError);
     });
 
     it('raw() should throw RangeError when trying to read beyond buffer length', function () {
-        var reader, buffer = new Buffer('abcde');
+        var protocol = new Protocol();
+        var buffer = new Buffer('abcde');
 
-        reader = new protocol.Reader(buffer);
         expect(function () {
-            reader.raw('chars', 6);
+            protocol.read(buffer).raw('chars', 6);
         }).to.throw(RangeError);
     });
 
     it('methods should be chainable', function () {
-        var reader, buffer = new Buffer('abcde');
+        var protocol = new Protocol();
+        var buffer = new Buffer('abcde');
 
         protocol.define('char', {
             read: function () {
@@ -188,12 +195,12 @@ describe('Reader', function () {
             }
         });
 
-        reader = new protocol.Reader(buffer);
-        reader.skip(1).demand(1).loop('chars', reader.char, 4).result.should.be.eql({ chars: ['b', 'c', 'd', 'e'] });
+        protocol.read(buffer).skip(1).demand(1).loop('chars', protocol.reader.char, 4).result.should.be.eql({ chars: ['b', 'c', 'd', 'e'] });
     });
 
     it('should be possible to create dynamic fields', function () {
-        var reader, buffer = new Buffer(6);
+        var protocol = new Protocol();
+        var buffer = new Buffer(6);
 
         buffer.write('xname');
         buffer.writeInt8(10, 5);
@@ -210,12 +217,11 @@ describe('Reader', function () {
             }
         });
 
-        reader = new protocol.Reader(buffer);
-
-        reader.dynamic('obj').result.should.be.eql({ obj: { xname: 10 } });
+        protocol.read(buffer).dynamic('obj').result.should.be.eql({ obj: { xname: 10 } });
     });
 
     it('should assign properties to top context when top context has no name', function () {
+        var protocol = new Protocol();
         var buffer = new Buffer(2);
 
         buffer.writeInt8(1, 0);

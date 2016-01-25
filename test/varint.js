@@ -2,10 +2,12 @@
 
 /* global describe, it, expect */
 
-var protocol = require('../lib/index');
+var Protocol = require('../lib/index');
 var Long     = require('long');
 
 // https://github.com/google/protobuf/blob/master/src/google/protobuf/io/coded_stream_unittest.cc
+
+var protocol = new Protocol();
 
 describe('Varint', function () {
     var VARINT32_VALUES = [
@@ -28,8 +30,7 @@ describe('Varint', function () {
 
     VARINT32_VALUES.forEach(function (test, ind) {
         it('UVarint 32 bit #' + ind, function () {
-            var writer = new protocol.Writer();
-            var encoded = writer.UVarint(test[2]).result();
+            var encoded = protocol.write().UVarint(test[2]).result();
             encoded.should.be.eql(test[0]);
             protocol.read(encoded).UVarint('v').result.v.should.be.eql(test[2]);
         });
@@ -37,8 +38,7 @@ describe('Varint', function () {
 
     VARINT64_VALUES.forEach(function (test, ind) {
         it('UVarint 64 bit #' + ind, function () {
-            var writer = new protocol.Writer();
-            var encoded = writer.UVarint64(test[2]).result();
+            var encoded = protocol.write().UVarint64(test[2]).result();
             encoded.should.be.eql(test[0]);
             protocol.read(encoded).UVarint64('v').result.v.should.be.eql(test[2]);
         });

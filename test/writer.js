@@ -2,7 +2,7 @@
 
 /* global describe, it */
 
-var protocol = require('../lib/index');
+var Protocol = require('../lib/index');
 var Long     = require('long');
 
 describe('Writer', function () {
@@ -26,6 +26,7 @@ describe('Writer', function () {
 
         primitives.forEach(function (p) {
             it('should write ' + p[0], function () {
+                var protocol = new Protocol();
                 var buffer = new Buffer(2 * p[1]), num1, num2;
                 if (p[0].indexOf('U') !== 0) { // signed
                     num1 = -123; num2 = 123;
@@ -40,83 +41,81 @@ describe('Writer', function () {
         });
 
         it('should write raw bytes from buffer', function () {
+            var protocol = new Protocol();
             var buffer = new Buffer([1, 2, 3, 4]);
 
             protocol.write().raw(buffer).result().should.be.eql(buffer);
         });
 
         it('should write raw bytes from string', function () {
-            var writer, string = 'abcde';
+            var protocol = new Protocol();
+            var string = 'abcde';
 
-            writer = new protocol.Writer();
-            writer.raw(string).result().toString('utf8').should.be.eql(string);
+            protocol.write().raw(string).result().toString('utf8').should.be.eql(string);
         });
 
         it('should write raw bytes from utf8 string', function () {
-            var writer, string = '人人生而自由，在尊嚴和權利上一律平等。';
-
-            writer = new protocol.Writer();
-            writer.raw(string).result().toString('utf8').should.be.eql(string);
+            var protocol = new Protocol();
+            var string = '人人生而自由，在尊嚴和權利上一律平等。';
+            protocol.write().raw(string).result().toString('utf8').should.be.eql(string);
         });
 
         it('should write raw bytes from array of octets', function () {
-            var writer, array = [1, 2, 3, 4];
-
-            writer = new protocol.Writer();
-            writer.raw(array).result().should.be.eql(new Buffer(array));
+            var protocol = new Protocol();
+            var array = [1, 2, 3, 4];
+            protocol.write().raw(array).result().should.be.eql(new Buffer(array));
         });
     });
 
     describe('64 bits', function () {
         var slong = new Long(0xFFFFFFFF, 0x7FFFFFFF),
             ulong = new Long(0xFFFFFFFF, 0x7FFFFFFF, true),
-            MAX_NUM = 9007199254740991, MIN_NUM = -9007199254740991, writer;
+            MAX_NUM = 9007199254740991, MIN_NUM = -9007199254740991;
 
         it('Int64BE', function () {
-            writer = new protocol.Writer();
-            writer.Int64BE(slong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+            var protocol = new Protocol();
+            protocol.write().Int64BE(slong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
         });
 
         it('Int64BE from number', function () {
-            writer = new protocol.Writer();
-            writer.Int64BE(MIN_NUM).result().should.be.eql(new Buffer([0XFF, 0XE0, 0X00, 0X00, 0X00, 0X00, 0X00, 0X01]));
+            var protocol = new Protocol();
+            protocol.write().Int64BE(MIN_NUM).result().should.be.eql(new Buffer([0XFF, 0XE0, 0X00, 0X00, 0X00, 0X00, 0X00, 0X01]));
         });
 
         it('Int64LE', function () {
-            writer = new protocol.Writer();
-            writer.Int64LE(slong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
+            var protocol = new Protocol();
+            protocol.write().Int64LE(slong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
         });
 
         it('Int64LE from number', function () {
-            writer = new protocol.Writer();
-            writer.Int64LE(MIN_NUM).result().should.be.eql(new Buffer([0X01, 0X00, 0X00, 0X00, 0X00, 0X00, 0XE0, 0XFF]));
+            var protocol = new Protocol();
+            protocol.write().Int64LE(MIN_NUM).result().should.be.eql(new Buffer([0X01, 0X00, 0X00, 0X00, 0X00, 0X00, 0XE0, 0XFF]));
         });
 
         it('UInt64BE', function () {
-            writer = new protocol.Writer();
-            writer.UInt64BE(ulong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
+            var protocol = new Protocol();
+            protocol.write().UInt64BE(ulong).result().should.be.eql(new Buffer([0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]));
         });
 
         it('UInt64BE from number', function () {
-            writer = new protocol.Writer();
-            writer.UInt64BE(MAX_NUM).result().should.be.eql(new Buffer([0X00, 0X1F, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF]));
+            var protocol = new Protocol();
+            protocol.write().UInt64BE(MAX_NUM).result().should.be.eql(new Buffer([0X00, 0X1F, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF]));
         });
 
         it('UInt64LE', function () {
-            writer = new protocol.Writer();
-            writer.UInt64LE(ulong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
+            var protocol = new Protocol();
+            protocol.write().UInt64LE(ulong).result().should.be.eql(new Buffer([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]));
         });
 
         it('UInt64LE from number', function () {
-            writer = new protocol.Writer();
-            writer.UInt64LE(MAX_NUM).result().should.be.eql(new Buffer([0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0X1F, 0X00]));
+            var protocol = new Protocol();
+            protocol.write().UInt64LE(MAX_NUM).result().should.be.eql(new Buffer([0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0XFF, 0X1F, 0X00]));
         });
     });
 
     describe('arrays (loop)', function () {
-        var writer;
-
         it('should write custom array', function () {
+            var protocol = new Protocol();
             protocol.define('customArray', {
                 write: function (values) {
                     var i = 0;
@@ -129,11 +128,11 @@ describe('Writer', function () {
                 }
             });
 
-            writer = new protocol.Writer();
-            writer.customArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
+            protocol.write().customArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
         });
 
         it('should write arrays with loop() method', function () {
+            var protocol = new Protocol();
             protocol.define('loopArray', {
                 write: function (values) {
                     this
@@ -142,11 +141,11 @@ describe('Writer', function () {
                 }
             });
 
-            writer = new protocol.Writer();
-            writer.loopArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
+            protocol.write().loopArray([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4]));
         });
 
         it('loop should honour iterations argument', function () {
+            var protocol = new Protocol();
             protocol.define('loopArrayIterations', {
                 write: function (values) {
                     this
@@ -155,11 +154,11 @@ describe('Writer', function () {
                 }
             });
 
-            writer = new protocol.Writer();
-            writer.loopArrayIterations([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
+            protocol.write().loopArrayIterations([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
         });
 
         it('loop should stop when end() called', function () {
+            var protocol = new Protocol();
             protocol.define('loopArrayEnd', {
                 write: function (values) {
                     var i = 0;
@@ -174,32 +173,32 @@ describe('Writer', function () {
                 }
             });
 
-            writer = new protocol.Writer();
-            writer.loopArrayEnd([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
+            protocol.write().loopArrayEnd([2, 3, 4]).result().should.be.eql(new Buffer([0, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 3]));
         });
     });
 
     it('methods should be chainable', function () {
-        var writer;
-
+        var protocol = new Protocol();
         protocol.define('char', {
             write: function (char) {
                 this.Int8(char.charCodeAt(0));
             }
         });
 
-        writer = new protocol.Writer();
-        writer.skip(0).demand(1).loop(['a', 'b', 'c', 'd'], writer.char).result().should.be.eql(new Buffer([97, 98, 99, 100]));
+
+        protocol.write().skip(0).demand(1).loop(['a', 'b', 'c', 'd'], protocol.writer.char).result().should.be.eql(new Buffer([97, 98, 99, 100]));
     });
 
     it('reset() should reset writer buffer', function () {
-        var writer = new protocol.Writer();
-        writer.Int8(1).reset().Int8(2).result().should.be.eql(new Buffer([2]));
+        var protocol = new Protocol();
+        protocol.write().Int8(1).reset().Int8(2).result().should.be.eql(new Buffer([2]));
     });
 
     it('should be able to grow buffer when needed', function () {
-        var writer = new protocol.Writer(1); // initial buffer is 1 byte
-        writer.buffer.length.should.be.eql(1);
-        writer.Int8(1).Int8(2).result().should.be.eql(new Buffer([1, 2]));
+        var protocol = new Protocol({
+            writerBufSize: 1
+        });
+        protocol.writer.buffer.length.should.be.eql(1);
+        protocol.write().Int8(1).Int8(2).result().should.be.eql(new Buffer([1, 2]));
     });
 });
