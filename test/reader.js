@@ -243,4 +243,52 @@ describe('Reader', function () {
 
         protocol.read(buffer).emptyname().result.should.be.eql({ f1: 1, f2: 2 });
     });
+
+    it('should assign properties to top context when top context has no name when overwriting context', function () {
+        var protocol = new Protocol();
+        var buffer = new Buffer(2);
+
+        buffer.writeInt8(1, 0);
+        buffer.writeInt8(2, 1);
+
+        protocol.define('_emptyname', {
+            read: function () {
+                return this.Int8().context + this.Int8().context;
+            }
+        });
+
+        protocol.define('emptyname', {
+            read: function () {
+                this._emptyname();
+            }
+        });
+
+        protocol.read(buffer).emptyname().result.should.be.eql(3);
+    });
+
+    it('should assign properties to top context when top context has no name in the loop', function () {
+        var protocol = new Protocol();
+        var buffer = new Buffer('abcde');
+
+        protocol.define('char', {
+            read: function () {
+                return String.fromCharCode(this.Int8().context);
+            }
+        });
+
+        protocol.read(buffer).loop('chars', protocol.reader.char, 5).result.should.be.eql({ chars: ['a', 'b', 'c', 'd', 'e'] });
+    });
+
+    it('should support namespaces', function () {
+        var protocol = new Protocol();
+        var buffer = new Buffer('a');
+
+        protocol.define('char', {
+            read: function () {
+                return String.fromCharCode(this.Int8().context);
+            }
+        }, 'org.test.types');
+
+        protocol.read(buffer).org.test.types.char('char').result.should.be.eql({ char: 'a' });
+    });
 });
