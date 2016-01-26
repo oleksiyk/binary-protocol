@@ -1,0 +1,20 @@
+enum MyEnum {
+    ONE = 1;
+    TWO = 2;
+}
+
+message Test {
+    enum MyEnum2 {
+        ONE = 1;
+        TWO = 2;
+    }
+
+    message Test2 {
+        optional string string = 1;
+    }
+
+    optional string string = 1;
+    optional MyEnum myenum = 2;
+    optional MyEnum2 myenum2 = 3;
+    optional Test2 test2 = 4;
+}

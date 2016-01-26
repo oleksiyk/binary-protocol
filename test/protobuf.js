@@ -255,4 +255,30 @@ describe('Protobuf', function () {
             test: null
         });
     });
+
+    it('proto file without package', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        var encoded;
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/no-package.proto')));
+
+        encoded = protocol.write().Test({
+            string: 'yo',
+            test2: {
+                string: 'hi'
+            }
+        }).result;
+
+        protocol.read(encoded).Test().result.should.be.eql({
+            string: 'yo',
+            myenum: 1,
+            myenum2: 1,
+            test2: {
+                string: 'hi'
+            }
+        });
+    });
 });
