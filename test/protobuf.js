@@ -242,6 +242,17 @@ describe('Protobuf', function () {
         });
     });
 
+    it('reader should not use type-specific default value with optional fields when typeSpecificDefaults is set', function () {
+        var protocol = new Protocol({
+            protobuf: {
+                typeSpecificDefaults: false
+            }
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/basic.proto')));
+        protocol.read(new Buffer(0)).basic.Test().result.should.be.eql({});
+    });
+
     it('reader should throw on missing required field', function () {
         var protocol = new Protocol({
             protobuf: true
