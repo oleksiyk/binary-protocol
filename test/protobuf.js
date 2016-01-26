@@ -242,6 +242,20 @@ describe('Protobuf', function () {
         });
     });
 
+    it('reader should throw on missing required field', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/required-no-defaults.proto')));
+
+        function f() {
+            protocol.read(new Buffer(0)).basic.Test({});
+        }
+
+        expect(f).to.throw('Missing required field basic.Test:int32');
+    });
+
     it('handle misc default options', function () {
         var protocol = new Protocol({
             protobuf: true
