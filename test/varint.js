@@ -30,7 +30,7 @@ describe('Varint', function () {
 
     VARINT32_VALUES.forEach(function (test, ind) {
         it('UVarint 32 bit #' + ind, function () {
-            var encoded = protocol.write().UVarint(test[2]).result();
+            var encoded = protocol.write().UVarint(test[2]).result;
             encoded.should.be.eql(test[0]);
             protocol.read(encoded).UVarint('v').result.v.should.be.eql(test[2]);
         });
@@ -38,7 +38,7 @@ describe('Varint', function () {
 
     VARINT64_VALUES.forEach(function (test, ind) {
         it('UVarint 64 bit #' + ind, function () {
-            var encoded = protocol.write().UVarint64(test[2]).result();
+            var encoded = protocol.write().UVarint64(test[2]).result;
             encoded.should.be.eql(test[0]);
             protocol.read(encoded).UVarint64('v').result.v.should.be.eql(test[2]);
         });
