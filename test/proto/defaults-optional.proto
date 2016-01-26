@@ -1,0 +1,25 @@
+package basic;
+
+enum MyEnum {
+    ONE = 1;
+    TWO = 2;
+}
+
+message Test {
+    optional int32 int32 = 1 [default=-123];
+    optional uint32 uint32 = 2 [default=123];
+    optional sint32 sint32 = 3 [default=-123];
+    optional bool bool = 4 [default=false];
+    optional int64 int64 = 5 [default=-123];
+    optional uint64 uint64 = 6 [default=123];
+    optional sint64 sint64 = 7 [default=-123];
+    optional fixed64 fixed64 = 8 [default=123];
+    optional sfixed64 sfixed64 = 9 [default=-123];
+    optional double double = 10 [default=123.1];
+    optional fixed32 fixed32 = 11 [default=123];
+    optional sfixed32 sfixed32 = 12 [default=-123];
+    optional float float = 13 [default=123];
+    optional bytes bytes = 14 [default='cXdl'];
+    optional string string = 15 [default='asd'];
+    optional MyEnum myenum = 16 [default=TWO];
+}

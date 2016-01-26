@@ -8,7 +8,7 @@ var path     = require('path');
 var Long     = require('long');
 
 describe('Protobuf', function () {
-    it('should parse basic types', function () {
+    it('should parse/build basic types', function () {
         var protocol = new Protocol({
             protobuf: true
         });
@@ -40,14 +40,14 @@ describe('Protobuf', function () {
 
         var encoded;
 
-        protocol.parseProto(fs.readFileSync(path.join(__dirname, './basic.proto')));
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/basic.proto')));
 
         encoded = protocol.write().basic.Test(obj).result;
         encoded.should.be.eql(buffer);
         protocol.read(encoded).basic.Test().result.should.be.eql(obj);
     });
 
-    it('should parse complex embedded messages', function () {
+    it('should parse/build complex embedded messages', function () {
         var protocol = new Protocol({
             protobuf: true
         });
@@ -58,7 +58,8 @@ describe('Protobuf', function () {
                 name: 'Iron Inc.',
                 address: {
                     country: 'US'
-                }
+                },
+                models: []
             },
             speed: 2
         };
@@ -67,12 +68,191 @@ describe('Protobuf', function () {
 
         var encoded;
 
-        protocol.parseProto(fs.readFileSync(path.join(__dirname, './complex.proto')));
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/complex.proto')));
 
         encoded = protocol.write().Game.Cars.Car(obj).result;
 
         encoded.should.be.eql(buffer);
 
         protocol.read(encoded).Game.Cars.Car().result.should.be.eql(obj);
+    });
+
+    it('should parse/build embedded messages with referenced field types', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        var obj = {
+            first_name: 'John',
+            last_name: 'Doe',
+            address: {
+                country: 'US'
+            }
+        };
+
+        var buffer = new Buffer([10, 4, 74, 111, 104, 110, 18, 3, 68, 111, 101, 26, 4, 10, 2, 85, 83]);
+
+        var encoded;
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/complex.proto')));
+
+        encoded = protocol.write().Game.Cars.Car.Holder(obj).result;
+
+        encoded.should.be.eql(buffer);
+
+        protocol.read(encoded).Game.Cars.Car.Holder().result.should.be.eql(obj);
+    });
+
+    it('reader should throw on unknown message tag', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        var buffer = new Buffer([144, 1, 1]);
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/basic.proto')));
+
+        function f() {
+            protocol.read(buffer).basic.Test();
+        }
+
+        expect(f).to.throw('Unknown message tag');
+    });
+
+    it('writer should use default option with required fields', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        var buffer = new Buffer([8, 133, 255, 255, 255, 255, 255, 255, 255, 255, 1, 16, 123, 24,
+            245, 1, 32, 0, 40, 133, 255, 255, 255, 255, 255, 255, 255, 255, 1, 48, 123, 56, 245,
+            1, 65, 123, 0, 0, 0, 0, 0, 0, 0, 73, 133, 255, 255, 255, 255, 255, 255, 255, 81, 102,
+            102, 102, 102, 102, 198, 94, 64, 93, 123, 0, 0, 0, 101, 133, 255, 255, 255, 109, 0, 0,
+            246, 66, 114, 3, 113, 119, 101, 122, 3, 97, 115, 100, 128, 1, 2]);
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/defaults-required.proto')));
+
+        protocol.write().basic.Test({}).result.should.be.eql(buffer);
+    });
+
+    it('writer should not use default option with optional fields', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/defaults-optional.proto')));
+
+        protocol.write().basic.Test({}).result.should.be.eql(new Buffer(0));
+    });
+
+    it('writer should throw on missing required field', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/required-no-defaults.proto')));
+
+        function f() {
+            protocol.write().basic.Test({});
+        }
+
+        expect(f).to.throw('Missing required field basic.Test:int32');
+    });
+
+    it('reader should use default option with optional fields', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/defaults-optional.proto')));
+
+        protocol.read(new Buffer(0)).basic.Test().result.should.be.eql({
+            int32: -123,
+            uint32: 123,
+            sint32: -123,
+            bool: false,
+            int64: Long.fromNumber(-123),
+            uint64: Long.fromNumber(123, true),
+            sint64: Long.fromNumber(-123),
+            fixed64: Long.fromNumber(123, true),
+            sfixed64: Long.fromNumber(-123),
+            double: 123.1,
+            fixed32: 123,
+            sfixed32: -123,
+            float: 123,
+            bytes: new Buffer('qwe'),
+            string: 'asd',
+            myenum: 2
+        });
+    });
+
+    it('reader should use default option with required fields', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        var encoded;
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/defaults-required.proto')));
+
+        encoded = protocol.write().basic.Test({}).result;
+        protocol.read(encoded).basic.Test().result.should.be.eql({
+            int32: -123,
+            uint32: 123,
+            sint32: -123,
+            bool: false,
+            int64: Long.fromNumber(-123),
+            uint64: Long.fromNumber(123, true),
+            sint64: Long.fromNumber(-123),
+            fixed64: Long.fromNumber(123, true),
+            sfixed64: Long.fromNumber(-123),
+            double: 123.1,
+            fixed32: 123,
+            sfixed32: -123,
+            float: 123,
+            bytes: new Buffer('qwe'),
+            string: 'asd',
+            myenum: 2
+        });
+    });
+
+    it('reader should use type-specific default value with optional fields', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/basic.proto')));
+        protocol.read(new Buffer(0)).basic.Test().result.should.be.eql({
+            int32: 0,
+            uint32: 0,
+            sint32: 0,
+            bool: false,
+            int64: Long.ZERO,
+            uint64: Long.UZERO,
+            sint64: Long.ZERO,
+            fixed64: Long.UZERO,
+            sfixed64: Long.ZERO,
+            double: 0,
+            fixed32: 0,
+            sfixed32: 0,
+            float: 0,
+            bytes: new Buffer(0),
+            string: '',
+            myenum: 1,
+            strings: []
+        });
+    });
+
+    it('handle misc default options', function () {
+        var protocol = new Protocol({
+            protobuf: true
+        });
+
+        protocol.parseProto(fs.readFileSync(path.join(__dirname, 'proto/defaults-misc.proto')));
+        protocol.read(new Buffer(0)).basic.Test().result.should.be.eql({
+            string1: 'asd',
+            string2: 'asd',
+            string3: 'asd',
+            test: null
+        });
     });
 });

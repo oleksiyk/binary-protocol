@@ -1,0 +1,5 @@
+package basic;
+
+message Test {
+    required int32 int32 = 1;
+}
