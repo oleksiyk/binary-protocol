@@ -57,15 +57,13 @@ Built-in metods:
 var Protocol = require('bin-protocol');
 var protocol = new Protocol();
 
-var reader = new protocol.Reader(new Buffer([0, 1, 2, 3]));
-
-reader
+var result = protocol.read(new Buffer([0, 1, 2, 3]))
     .Int8('num1')
     .Int8('num2')
     .Int8('num3')
-    .Int8('num4');
+    .Int8('num4').result;
 
-console.log(reader.result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
+console.log(result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
 ```
 
 Define custom 'char' and 'array' methods:
