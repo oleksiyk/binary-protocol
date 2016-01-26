@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.png)](https://travis-ci.org/oleksiyk/binary-protocol)
 
-bin-protocol is a library for parsing and creating arbitrary byte buffers. It was created for [Apache Kafka client](https://github.com/oleksiyk/kafka).
+bin-protocol is a library for parsing and creating arbitrary byte buffers. Also support protocol buffers.
+It was created for [Apache Kafka client](https://github.com/oleksiyk/kafka).
 
 You can build your own type definitions based on the following methods:
 
@@ -30,8 +31,18 @@ Int64 support (using [long.js](https://github.com/dcodeIO/long.js)):
 Read or write raw bytes:
 * raw
 
+Varints:
+* UVarint (unsigned 32 bit varint)
+* Varint (signed 32 bit varint)
+* SVarint (signed zigzag encoded 32 bit varint)
+* UVarint64 (unsigned 64 bit varint)
+* Varint64 (signed 64 bit varint)
+* SVarint64 (signed zigzag encoded 64 bit varint)
+
 Loops (arrays):
 * loop
+
+Protocol buffers support
 
 
 ### Install
@@ -44,7 +55,8 @@ $ npm install bin-protocol
 Built-in metods:
 
 ```javascript
-var protocol = require('bin-protocol');
+var Protocol = require('bin-protocol');
+var protocol = new Protocol();
 
 var reader = new protocol.Reader(new Buffer([0, 1, 2, 3]));
 
@@ -60,7 +72,6 @@ console.log(reader.result); // => { num1: 0, num2: 1, num3: 2, num4: 3 }
 Define custom 'char' and 'array' methods:
 
 ```javascript
-var protocol = require('bin-protocol');
 
 protocol.define('char', {
     read: function () {
@@ -78,23 +89,20 @@ protocol.define('array', {
     }
 });
 
-var reader = new protocol.Reader(new Buffer([5, 97, 98, 99, 100, 101]));
+var result = protocol.read(new Buffer([5, 97, 98, 99, 100, 101])).array('chars').result;
 
-reader.array('chars');
-
-console.log(reader.result); // => { chars: [ 'a', 'b', 'c', 'd', 'e' ] }
+console.log(result); // => { chars: [ 'a', 'b', 'c', 'd', 'e' ] }
 ```
 
 ### Writer examples
 ```javascript
-var writer = new protocol.Writer();
 
-writer
+var buffer = protocol
+    .write()
     .Int8(1)
     .Int8(2)
-    .Int8(3);
-
-var buffer = writer.result();
+    .Int8(3)
+    .result
 
 console.log(buffer); // => <Buffer 01 02 03>
 ```
@@ -109,36 +117,33 @@ protocol.define('array', {
     }
 });
 
-var writer = new protocol.Writer();
+var buffer = protocol.write().array([2, 3, 4]).result;
 
-writer.array([2, 3, 4]);
-
-console.log(writer.result()); // => <Buffer 03 02 03 04>
+console.log(buffer); // => <Buffer 03 02 03 04>
 ```
 
 Define reader and writer methods together, this one writes (or reads) raw buffer preceeded by its length as 32 bit integer.
 
 ```javascript
 protocol.define('bytes', {
-    read: function() {
+    read: function () {
         this.Int32BE('length');
-        if(this.context.length <= 0){
+        if (this.context.length <= 0) {
             return null;
         }
         this.raw('value', this.context.length);
         return this.context.value;
     },
-    write: function(value) {
+    write: function (value) {
         if (value === undefined || value === null) {
             this.Int32BE(-1);
         } else {
-            if(Buffer.isBuffer(value) || typeof value === 'string'){
-                this
-                    .Int32BE(value.length)
-                    .raw(value);
-            } else {
-                throw new Error('Kafka bytes value should be a Buffer or String');
+            if (!Buffer.isBuffer(value)) {
+                value = new Buffer(_(value).toString(), 'utf8');
             }
+            this
+                .Int32BE(value.length)
+                .raw(value);
         }
     }
 });
@@ -156,7 +161,7 @@ protocol.define('customArray', {
         this.Int32BE('length');
 
         for(i = 0; i<this.context.length; i++){
-            this.Int32BE('items[' + i + ']'); // yes, this works
+            this.Int32BE('items[' + i + ']'); // yes, it works
         }
 
         return this.context.items;
@@ -195,6 +200,39 @@ protocol.define('loopArrayEnd', {
 ```
 
 See [Kafka protocol](https://github.com/oleksiyk/kafka/tree/master/lib/protocol) for more examples.
+
+### Protocol buffers support
+
+test.proto:
+
+```
+package basic;
+
+message Test {
+    optional string string = 15;
+}
+```
+
+
+```javascript
+var Protocol = require('bin-protocol');
+
+var protocol = new Protocol({
+    protobuf: true
+});
+
+protocol.parseProto(fs.readFileSync(path.join(__dirname, 'test.proto')));
+
+// encode message
+var encoded = protocol.write().basic.Test({
+    string: 'hello'
+}).result;
+
+// decode message
+var decoded = protocol.read(encoded).basic.Test().result;
+
+decoded => { string: 'hello' }
+```
 
 # License (MIT)
 
