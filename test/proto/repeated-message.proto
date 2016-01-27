@@ -1,0 +1,11 @@
+package UserDatabase;
+
+message User {
+
+    message Address {
+        required string country = 1;
+    }
+
+    required  string  name  = 1;
+    repeated  Address addresses = 2;
+}

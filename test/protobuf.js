@@ -19,6 +19,8 @@ var DefaultsOptionalProtocol            = createProtocol('proto/defaults-optiona
 var DefaultsMiscProtocol                = createProtocol('proto/defaults-misc.proto');
 var NoPackageProtocol                   = createProtocol('proto/no-package.proto');
 var RequiredNoDefaultsProtocol          = createProtocol('proto/required-no-defaults.proto');
+var RepeatedPackedProtocol              = createProtocol('proto/packed.proto');
+var RepeatedMessageProtocol             = createProtocol('proto/repeated-message.proto');
 
 describe('Protobuf', function () {
     it('should parse/build basic types', function () {
@@ -252,5 +254,36 @@ describe('Protobuf', function () {
                 string: 'hi'
             }
         });
+    });
+
+    it('repeated packed = true', function () {
+        var protocol = new RepeatedPackedProtocol();
+
+        var encoded = protocol.write().packed.Test({
+            nums: [3, 270, 86942]
+        }).result;
+
+        encoded.should.be.eql(new Buffer([0x22, 0x06, 0x03, 0x8e, 0x02, 0x9E, 0xA7, 0x05]));
+
+        protocol.read(encoded).packed.Test().result.should.be.eql({
+            nums: [3, 270, 86942]
+        });
+    });
+
+    it('repeated embedded message', function () {
+        var protocol = new RepeatedMessageProtocol();
+        var user = {
+            name: 'John Doe',
+            addresses: [
+                { country: 'US' },
+                { country: 'UA' }
+            ]
+        };
+
+        var encoded = protocol.write().UserDatabase.User(user).result;
+
+        encoded.should.be.eql(new Buffer([10, 8, 74, 111, 104, 110, 32, 68, 111, 101, 18, 4, 10, 2, 85, 83, 18, 4, 10, 2, 85, 65]));
+
+        protocol.read(encoded).UserDatabase.User().result.should.be.eql(user);
     });
 });

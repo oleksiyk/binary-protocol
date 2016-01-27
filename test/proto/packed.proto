@@ -1,0 +1,5 @@
+package packed;
+
+message Test {
+    repeated int32 nums = 4 [packed=true];
+}
