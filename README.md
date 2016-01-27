@@ -202,7 +202,8 @@ See [Kafka protocol](https://github.com/oleksiyk/kafka/tree/master/lib/protocol)
 
 test.proto:
 
-```
+```proto
+
 package basic;
 
 message Test {
