@@ -21,6 +21,7 @@ var NoPackageProtocol                   = createProtocol('proto/no-package.proto
 var RequiredNoDefaultsProtocol          = createProtocol('proto/required-no-defaults.proto');
 var RepeatedPackedProtocol              = createProtocol('proto/packed.proto');
 var RepeatedMessageProtocol             = createProtocol('proto/repeated-message.proto');
+var OneofProtocol                       = createProtocol('proto/oneof.proto');
 
 describe('Protobuf', function () {
     it('should parse/build basic types', function () {
@@ -285,5 +286,23 @@ describe('Protobuf', function () {
         encoded.should.be.eql(new Buffer([10, 8, 74, 111, 104, 110, 32, 68, 111, 101, 18, 4, 10, 2, 85, 83, 18, 4, 10, 2, 85, 65]));
 
         protocol.read(encoded).UserDatabase.User().result.should.be.eql(user);
+    });
+
+    it('oneof message', function () {
+        var protocol = new OneofProtocol();
+
+        var encoded = protocol.write().SampleMessage({
+            name1: 'John Doe',
+            id1: 12,
+            name2: 'John Smith',
+            id2: 21,
+        }).result;
+
+        protocol.read(encoded).SampleMessage().result.should.be.eql({
+            name1: 'John Doe',
+            id1: 0,
+            name2: 'John Smith',
+            id2: 0
+        });
     });
 });

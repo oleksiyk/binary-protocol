@@ -1,0 +1,13 @@
+message SampleMessage {
+
+  oneof test_oneof1 {
+     string name1 = 1;
+     int32 id1 = 2;
+  }
+
+  oneof test_oneof2 {
+     string name2 = 3;
+     int32 id2 = 4;
+  }
+
+}
