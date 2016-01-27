@@ -214,11 +214,9 @@ message Test {
 ```javascript
 var Protocol = require('bin-protocol');
 
-var protocol = new Protocol({
-    protobuf: true
-});
+var TestProtocol = Protocol.createProtobufProtocol(fs.readFileSync(path.join(__dirname, 'test.proto')));
 
-protocol.parseProto(fs.readFileSync(path.join(__dirname, 'test.proto')));
+var protocol = new TestProtocol();
 
 // encode message
 var encoded = protocol.write().basic.Test({

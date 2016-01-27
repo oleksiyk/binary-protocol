@@ -5,9 +5,8 @@
 var Protocol = require('../lib/index');
 var Long     = require('long');
 
-var protocol = new Protocol({
-    protobuf: true
-});
+var ProtobufProtocol = Protocol.createProtobufProtocol();
+var protocol = new ProtobufProtocol();
 
 describe('Protocol buffers types', function () {
     var MAX_UINT32 = Math.pow(2, 32) - 1, MIN_UINT32 = 0,

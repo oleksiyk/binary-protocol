@@ -65,6 +65,17 @@ describe('custom protocols', function () {
         MyProtocol.should.respondTo('define');
     });
 
+    it('should call contructor function with this binding in actual constructor', function () {
+        var myConstructor = function () {
+            this.myProperty = 'value';
+        };
+
+        var MyProtocol = Protocol.createProtocol(myConstructor);
+        var myProtocol = new MyProtocol;
+
+        myProtocol.should.have.ownProperty('myProperty', 'value');
+    });
+
     it('new protocol type - prototype methods', function () {
         var MyProtocol = Protocol.createProtocol();
         var myprotocol1 = new MyProtocol();
