@@ -22,6 +22,7 @@ var RequiredNoDefaultsProtocol          = createProtocol('proto/required-no-defa
 var RepeatedPackedProtocol              = createProtocol('proto/packed.proto');
 var RepeatedMessageProtocol             = createProtocol('proto/repeated-message.proto');
 var OneofProtocol                       = createProtocol('proto/oneof.proto');
+var MapProtocol                         = createProtocol('proto/map.proto');
 
 describe('Protobuf', function () {
     it('should parse/build basic types', function () {
@@ -304,5 +305,23 @@ describe('Protobuf', function () {
             name2: 'John Smith',
             id2: 0
         });
+    });
+
+    it('map message', function () {
+        var protocol = new MapProtocol();
+
+        var msg = {
+            items: {
+                id1: 'description1',
+                id2: 'description2',
+            }
+        };
+
+        var encoded = protocol.write().map.TODO(msg).result;
+
+        encoded.should.be.eql(new Buffer([10, 19, 10, 3, 105, 100, 49, 18, 12, 100, 101, 115, 99, 114, 105,
+            112, 116, 105, 111, 110, 49, 10, 19, 10, 3, 105, 100, 50, 18, 12, 100, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 50]));
+
+        protocol.read(encoded).map.TODO().result.should.be.eql(msg);
     });
 });

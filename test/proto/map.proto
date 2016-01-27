@@ -1,0 +1,5 @@
+package map;
+
+message TODO {
+    map<string, string> items = 1;
+}
