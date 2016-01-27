@@ -41,7 +41,7 @@ Varints:
 Loops (arrays):
 * loop
 
-Protocol buffers support
+Protocol buffers support: nested messages, packed repeated fields, maps, enums, packages (namespaces), oneofs
 
 
 ### Install
