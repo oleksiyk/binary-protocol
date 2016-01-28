@@ -196,9 +196,21 @@ describe('Writer', function () {
 
     it('should be able to grow buffer when needed', function () {
         var protocol = new Protocol({
-            writerBufSize: 1
+            bufferSize: 1
         });
         protocol.writer.buffer.length.should.be.eql(1);
         protocol.write().Int8(1).Int8(2).result.should.be.eql(new Buffer([1, 2]));
+    });
+
+    it('should return a copy of buffer with resultCopy = true', function () {
+        var protocol = new Protocol({
+            resultCopy: true
+        });
+        var buffer = protocol.write().Int8(1).Int8(2).result;
+
+        buffer.should.be.eql(new Buffer([1, 2]));
+        buffer.writeInt8(10, 0);
+        buffer.should.be.eql(new Buffer([10, 2]));
+        protocol.writer.buffer.slice(0, 2).should.be.eql(new Buffer([1, 2]));
     });
 });
