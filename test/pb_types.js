@@ -276,6 +276,12 @@ describe('Protocol buffers types', function () {
         protocol.read(encoded).bytes('v').result.v.should.be.eql(buf);
     });
 
+    it('bytes - UTF8 string', function () {
+        var str = '人人生而自由，在尊嚴和權利上一律平等。';
+        var encoded = protocol.write().bytes(str).result;
+        protocol.read(encoded).bytes().result.toString('utf8').should.be.eql(str);
+    });
+
     it('bytes - zero length', function () {
         var buf = new Buffer(0);
 
