@@ -4,109 +4,95 @@
 
 var Protocol = require('../lib/index');
 
-describe('custom protocols', function () {
-    it('should be able to define new protocol methods on the global prototypes', function () {
-        var protocol1 = new Protocol();
-        var protocol2 = new Protocol();
-
-        protocol1.read().should.not.respondTo('gtest1');
-        protocol2.read().should.not.respondTo('gtest1');
-        protocol1.read().should.not.have.ownProperty('gtest1');
-        protocol2.read().should.not.have.ownProperty('gtest1');
+describe('Protocol definitions', function () {
+    it('should be able to define new methods', function () {
+        var protocol;
 
         Protocol.define('gtest1', {
-            read: function () {
-                this.Int8();
-            }
+            read: function () {}
         });
 
-        protocol1.read().should.respondTo('gtest1');
-        protocol2.read().should.respondTo('gtest1');
-        protocol1.read().should.not.have.ownProperty('gtest1');
-        protocol2.read().should.not.have.ownProperty('gtest1');
+        protocol = new Protocol();
+
+        protocol.read().should.respondTo('gtest1');
     });
 
-    it('should be able to define new protocol methods on the current instance only', function () {
-        var protocol1 = new Protocol();
-        var protocol2 = new Protocol();
-        var buffer = new Buffer([0xff]);
+    it('createProtocol() should call supplied function in constructor', function () {
+        var protocol,
+            Protocol1 = Protocol.createProtocol(function () {
+                this.test = 'passed';
+            });
 
-        protocol1.read().should.not.respondTo('gtest2');
-        protocol2.read().should.not.respondTo('gtest2');
-        protocol1.read().should.not.have.ownProperty('gtest2');
-        protocol2.read().should.not.have.ownProperty('gtest2');
+        protocol = new Protocol1();
 
-        protocol1.define('gtest2', {
-            read: function () {
-                this.Int8();
-            }
+        protocol.should.have.property('test', 'passed');
+    });
+
+    it('new methods should be inherited with .createProtocol()', function () {
+        var Protocol1, protocol;
+
+        Protocol.define('gtest2', {
+            read: function () {}
         });
 
-        protocol2.define('gtest2', {
-            read: function () {
-                this.UInt8();
-            }
+        Protocol1 = Protocol.createProtocol();
+
+        protocol = new Protocol1();
+
+        protocol.read().should.respondTo('gtest2');
+    });
+
+    it('child methods should not be available in parent protocol', function () {
+        var Protocol1, protocol1, protocol;
+
+        Protocol1 = Protocol.createProtocol();
+
+        Protocol1.define('gtest3', {
+            read: function () {}
         });
 
-        protocol1.read().should.respondTo('gtest2');
-        protocol2.read().should.respondTo('gtest2');
-        protocol1.read().should.have.ownProperty('gtest2');
-        protocol2.read().should.have.ownProperty('gtest2');
+        protocol1 = new Protocol1();
+        protocol = new Protocol();
 
-        protocol1.read(buffer).gtest2().result.should.be.eql(-1);
-        protocol2.read(buffer).gtest2().result.should.be.eql(255);
-    });
-
-    it('should be able to create new protocol type', function () {
-        var MyProtocol = Protocol.createProtocol();
-
-        MyProtocol.should.be.a('function');
-
-        MyProtocol.should.respondTo('define');
-    });
-
-    it('should call contructor function with this binding in actual constructor', function () {
-        var myConstructor = function () {
-            this.myProperty = 'value';
-        };
-
-        var MyProtocol = Protocol.createProtocol(myConstructor);
-        var myProtocol = new MyProtocol;
-
-        myProtocol.should.have.ownProperty('myProperty', 'value');
-    });
-
-    it('new protocol type - prototype methods', function () {
-        var MyProtocol = Protocol.createProtocol();
-        var myprotocol1 = new MyProtocol();
-        var myprotocol2 = new MyProtocol();
-        var protocol = new Protocol();
-
-        myprotocol1.read().should.not.respondTo('gtest3');
-        myprotocol2.read().should.not.respondTo('gtest3');
-        myprotocol1.read().should.not.have.ownProperty('gtest3');
-        myprotocol2.read().should.not.have.ownProperty('gtest3');
-
-        // should not have local methods of Protocol instances
-        myprotocol1.read().should.not.respondTo('gtest2');
-        myprotocol1.read().should.not.have.ownProperty('gtest2');
-
-        // it still should have methods defined on parent Protocol
-        myprotocol1.read().should.respondTo('gtest1');
-        myprotocol1.read().should.not.have.ownProperty('gtest1');
-
-        MyProtocol.define('gtest3', {
-            read: function () {
-                this.Int8('mp');
-            }
-        });
-
-        myprotocol1.read().should.respondTo('gtest3');
-        myprotocol2.read().should.respondTo('gtest3');
-        myprotocol1.read().should.not.have.ownProperty('gtest3');
-        myprotocol2.read().should.not.have.ownProperty('gtest3');
-
+        protocol1.read().should.respondTo('gtest3');
         protocol.read().should.not.respondTo('gtest3');
-        protocol.read().should.not.have.ownProperty('gtest3');
+    });
+
+    it('methods with namespaces', function () {
+        var Protocol1, protocol;
+
+        Protocol1 = Protocol.createProtocol();
+
+        Protocol1.define('test1', {
+            read: function () {}
+        }, 'namespace');
+
+        protocol = new Protocol1();
+
+        protocol.read().namespace.should.respondTo('test1');
+    });
+
+    it('child protocols should not share own methods', function () {
+        var Protocol1, Protocol2, protocol1, protocol2;
+
+        Protocol1 = Protocol.createProtocol();
+        Protocol2 = Protocol.createProtocol();
+
+        Protocol1.define('test1', {
+            read: function () {}
+        }, 'test');
+
+        Protocol2.define('test2', {
+            read: function () {}
+        }, 'test');
+
+        protocol1 = new Protocol1();
+        protocol2 = new Protocol2();
+
+        protocol1.read().test.should.respondTo('test1');
+        protocol1.read().test.should.not.respondTo('test2');
+
+        protocol2.read().test.should.respondTo('test2');
+        protocol2.read().test.should.not.respondTo('test1');
     });
 });
