@@ -10,7 +10,7 @@
     "main": "./lib/index.js",
     "keywords": ["buffer", "raw", "binary", "protocol", "parser", "reader", "builder"],
     "dependencies": {
-        "lodash": "~=3.10.1",
+        "lodash": "^4.1.0",
         "long": "~=3.0.1",
         "protocol-buffers-schema": "^3.0.0"
     },
