@@ -196,10 +196,10 @@ describe('Writer', function () {
 
     it('should be able to grow buffer when needed', function () {
         var protocol = new Protocol({
-            bufferSize: 1
+            bufferSize: 8192
         });
-        protocol.writer.buffer.length.should.be.eql(1);
-        protocol.write().Int8(1).Int8(2).result.should.be.eql(new Buffer([1, 2]));
+        protocol.writer.buffer.length.should.be.eql(8192);
+        protocol.write().raw(new Buffer(8192)).Int8(1).Int8(2).result.slice(8192).should.be.eql(new Buffer([1, 2]));
     });
 
     it('should return a copy of buffer with resultCopy = true', function () {
