@@ -148,6 +148,17 @@ protocol.define('bytes', {
 
 ### Loops (arrays)
 
+Give a buffer where first 32bit integer is a number (3) of further 32bit integers (2,3 and 4):
+
+```javascript
+var buffer = new Buffer(16);
+
+buffer.writeInt32BE(3, 0);
+buffer.writeInt32BE(2, 4);
+buffer.writeInt32BE(3, 8);
+buffer.writeInt32BE(4, 12);
+```
+
 All next 3 examples are essentialy identical:
 
 Read data with your own code:
@@ -164,6 +175,8 @@ protocol.define('customArray', {
         return this.context.items;
     }
 });
+
+protocol.read(buffer).customArray('items').result; // => { items: [2, 3, 4] }
 ```
 
 Read with `.loop()` method by providing the length (loop count):
@@ -176,6 +189,8 @@ protocol.define('loopArray', {
         return this.context.items;
     }
 });
+
+protocol.read(buffer).loopArray('items').result; // => { items: [2, 3, 4] }
 ```
 
 Read with `.loop()` method until the `end()` is called:
@@ -194,13 +209,15 @@ protocol.define('loopArrayEnd', {
         return this.context.items;
     }
 });
+
+protocol.read(buffer).loopArrayEnd('items').result; // => { items: [2, 3, 4] }
 ```
 
 See [Kafka protocol](https://github.com/oleksiyk/kafka/tree/master/lib/protocol) for more examples.
 
 ### Protocol buffers support
 
-test.proto:
+Given a test.proto:
 
 ```proto
 
