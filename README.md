@@ -148,7 +148,7 @@ protocol.define('bytes', {
 
 ### Loops (arrays)
 
-Give a buffer where first 32bit integer is a number (3) of further 32bit integers (2,3 and 4):
+Given a buffer where first 32bit integer is a number (3) of further 32bit integers (2,3 and 4):
 
 ```javascript
 var buffer = new Buffer(16);
@@ -242,10 +242,10 @@ var encoded = protocol.write().basic.Test({
 }).result;
 
 // decode message
-var decoded = protocol.read(encoded).basic.Test().result;
-
-decoded => { string: 'hello' }
+var decoded = protocol.read(encoded).basic.Test().result; // => { string: 'hello' }
 ```
+
+See [Riak protocol](https://github.com/oleksiyk/no-riak/blob/master/lib/protocol.js) for another example.
 
 # License (MIT)
 
