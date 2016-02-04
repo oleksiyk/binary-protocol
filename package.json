@@ -15,10 +15,10 @@
         "protocol-buffers-schema": "^3.0.0"
     },
     "devDependencies": {
-        "mocha": "~=2.3.4",
-        "chai": "~=3.4.1",
+        "mocha": "^2.4.5",
+        "chai": "^3.5.0",
         "eslint": "^1.10.3",
-        "eslint-config-airbnb": "^3.1.0",
+        "eslint-config-airbnb": "^5.0.0",
         "istanbul": "^0.4.2"
     },
     "bugs": {
