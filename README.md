@@ -1,6 +1,6 @@
 # bin-protocol
 
-[![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.png)](https://travis-ci.org/oleksiyk/binary-protocol)
+[![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.svg)](https://travis-ci.org/oleksiyk/binary-protocol)
 [![Dependencies](https://david-dm.org/oleksiyk/binary-protocol.svg)](https://david-dm.org/oleksiyk/binary-protocol)
 [![DevDependencies](https://david-dm.org/oleksiyk/binary-protocol/dev-status.svg)](https://david-dm.org/oleksiyk/binary-protocol#info=devDependencies)
 
