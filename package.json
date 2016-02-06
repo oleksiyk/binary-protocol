@@ -6,7 +6,7 @@
         "name": "Oleksiy Krivoshey",
         "email": "oleksiyk@gmail.com"
     },
-    "version": "2.0.10",
+    "version": "2.0.11",
     "main": "./lib/index.js",
     "keywords": ["buffer", "raw", "binary", "protocol", "parser", "reader", "builder"],
     "dependencies": {
