@@ -1,9 +1,12 @@
 # bin-protocol
 
-[![Build Status](https://travis-ci.org/oleksiyk/binary-protocol.svg)](https://travis-ci.org/oleksiyk/binary-protocol)
-[![Test Coverage](https://codeclimate.com/github/oleksiyk/binary-protocol/badges/coverage.svg)](https://codeclimate.com/github/oleksiyk/binary-protocol/coverage)
-[![Dependencies](https://david-dm.org/oleksiyk/binary-protocol.svg)](https://david-dm.org/oleksiyk/binary-protocol)
-[![DevDependencies](https://david-dm.org/oleksiyk/binary-protocol/dev-status.svg)](https://david-dm.org/oleksiyk/binary-protocol#info=devDependencies)
+[![Build Status][badge-travis]][travis]
+[![Test Coverage][badge-coverage]][coverage]
+[![bitHound Code][badge-bithound-code]][bithound-code]
+[![bitHound Overall Score][badge-bithound-overall]][bithound-overall]
+[![Dependencies][badge-deps]][deps]
+[![DevDependencies][badge-dev-deps]][dev-deps]
+[![license][badge-license]][license]
 
 bin-protocol is a library for parsing and creating arbitrary byte buffers with optional protocol buffers support.
 
@@ -250,6 +253,18 @@ var decoded = protocol.read(encoded).basic.Test().result; // => { string: 'hello
 
 See [Riak protocol](https://github.com/oleksiyk/no-riak/blob/master/lib/protocol.js) for another example.
 
+### Custom protocols
+
+You can define several independent protocols by using `Protocol.createProtocol()` function:
+
+```javascript
+var Protocol1 = Protocol.createProtocol();
+var Protocol2 = Protocol.createProtocol();
+
+Protocol1.define('message', ...);
+Protocol2.define('message', ...);
+```
+
 # License (MIT)
 
 Copyright (c) 2015
@@ -276,3 +291,17 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
+[badge-license]: https://img.shields.io/badge/License-MIT-green.svg
+[license]: https://github.com/oleksiyk/binary-protocol/blob/master/LICENSE
+[badge-travis]: https://api.travis-ci.org/oleksiyk/binary-protocol.svg?branch=master
+[travis]: https://travis-ci.org/oleksiyk/binary-protocol
+[badge-coverage]: https://codeclimate.com/github/oleksiyk/binary-protocol/badges/coverage.svg
+[coverage]: https://codeclimate.com/github/oleksiyk/binary-protocol/coverage
+[badge-deps]: https://david-dm.org/oleksiyk/binary-protocol.svg
+[deps]: https://david-dm.org/oleksiyk/binary-protocol
+[badge-dev-deps]: https://david-dm.org/oleksiyk/binary-protocol/dev-status.svg
+[dev-deps]: https://david-dm.org/oleksiyk/binary-protocol#info=devDependencies
+[badge-bithound-code]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/code.svg
+[bithound-code]: https://www.bithound.io/github/oleksiyk/binary-protocol
+[badge-bithound-overall]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/score.svg
+[bithound-overall]: https://www.bithound.io/github/oleksiyk/binary-protocol
