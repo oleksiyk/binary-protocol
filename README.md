@@ -4,8 +4,8 @@
 [![Test Coverage][badge-coverage]][coverage]
 [![bitHound Code][badge-bithound-code]][bithound-code]
 [![bitHound Overall Score][badge-bithound-overall]][bithound-overall]
-[![Dependencies][badge-deps]][deps]
-[![DevDependencies][badge-dev-deps]][dev-deps]
+[![bitHound Dependencies][badge-bithound-deps]][bithound-deps]
+[![bitHound Dev Dependencies][badge-bithound-dev-deps]][bithound-dev-deps]
 [![license][badge-license]][license]
 
 bin-protocol is a library for parsing and creating arbitrary byte buffers with optional protocol buffers support.
@@ -251,7 +251,7 @@ var encoded = protocol.write().basic.Test({
 var decoded = protocol.read(encoded).basic.Test().result; // => { string: 'hello' }
 ```
 
-See [Riak protocol](https://github.com/oleksiyk/no-riak/blob/master/lib/protocol.js) for another example.
+Sebinary-protocol protocol](https://github.com/oleksiyk/binary-protocol/blob/master/lib/protocol.js) for another example.
 
 ### Custom protocols
 
@@ -305,3 +305,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 [bithound-code]: https://www.bithound.io/github/oleksiyk/binary-protocol
 [badge-bithound-overall]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/score.svg
 [bithound-overall]: https://www.bithound.io/github/oleksiyk/binary-protocol
+[badge-bithound-deps]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/dependencies.svg
+[bithound-deps]: https://www.bithound.io/github/oleksiyk/binary-protocol/master/dependencies/npm
+[badge-bithound-dev-deps]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/devDependencies.svg
+[bithound-dev-deps]: https://www.bithound.io/github/oleksiyk/binary-protocol/master/dependencies/npm
