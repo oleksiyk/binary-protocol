@@ -2,10 +2,8 @@
 
 [![Build Status][badge-travis]][travis]
 [![Test Coverage][badge-coverage]][coverage]
-[![bitHound Code][badge-bithound-code]][bithound-code]
-[![bitHound Overall Score][badge-bithound-overall]][bithound-overall]
-[![bitHound Dependencies][badge-bithound-deps]][bithound-deps]
-[![bitHound Dev Dependencies][badge-bithound-dev-deps]][bithound-dev-deps]
+[![david Dependencies][badge-david-deps]][david-deps]
+[![david Dev Dependencies][badge-david-dev-deps]][david-dev-deps]
 [![license][badge-license]][license]
 
 bin-protocol is a library for parsing and creating arbitrary byte buffers with optional protocol buffers support.
@@ -297,10 +295,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 [travis]: https://travis-ci.org/oleksiyk/binary-protocol
 [badge-coverage]: https://codeclimate.com/github/oleksiyk/binary-protocol/badges/coverage.svg
 [coverage]: https://codeclimate.com/github/oleksiyk/binary-protocol/coverage
-[badge-deps]: https://david-dm.org/oleksiyk/binary-protocol.svg
-[deps]: https://david-dm.org/oleksiyk/binary-protocol
-[badge-dev-deps]: https://david-dm.org/oleksiyk/binary-protocol/dev-status.svg
-[dev-deps]: https://david-dm.org/oleksiyk/binary-protocol#info=devDependencies
+[badge-david-deps]: https://david-dm.org/oleksiyk/binary-protocol.svg
+[david-deps]: https://david-dm.org/oleksiyk/binary-protocol
+[badge-david-dev-deps]: https://david-dm.org/oleksiyk/binary-protocol/dev-status.svg
+[david-dev-deps]: https://david-dm.org/oleksiyk/binary-protocol#info=devDependencies
 [badge-bithound-code]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/code.svg
 [bithound-code]: https://www.bithound.io/github/oleksiyk/binary-protocol
 [badge-bithound-overall]: https://www.bithound.io/github/oleksiyk/binary-protocol/badges/score.svg
