@@ -1,37 +1,44 @@
 {
-    "name": "bin-protocol",
-    "description": "buffer maker and parser for binary protocols",
-    "homepage": "http://github.com/oleksiyk/binary-protocol",
-    "author": {
-        "name": "Oleksiy Krivoshey",
-        "email": "oleksiyk@gmail.com"
-    },
-    "version": "2.0.11",
-    "main": "./lib/index.js",
-    "keywords": ["buffer", "raw", "binary", "protocol", "parser", "reader", "builder"],
-    "dependencies": {
-        "lodash": "^4.1.0",
-        "long": "^3.0.3",
-        "protocol-buffers-schema": "^3.0.0"
-    },
-    "devDependencies": {
-        "mocha": "^2.4.5",
-        "chai": "^3.5.0",
-        "eslint": "^2.2.0",
-        "eslint-config-magictoolbox": "^0.0.2",
-        "istanbul": "^0.4.2"
-    },
-    "bugs": {
-        "url": "https://github.com/oleksiyk/binary-protocol/issues"
-    },
-    "scripts": {
-        "test": "make"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/oleksiyk/binary-protocol.git"
-    },
-    "readmeFilename": "README.md",
-    "license": "MIT"
+  "name": "bin-protocol",
+  "description": "buffer maker and parser for binary protocols",
+  "homepage": "http://github.com/oleksiyk/binary-protocol",
+  "author": {
+    "name": "Oleksiy Krivoshey",
+    "email": "oleksiyk@gmail.com"
+  },
+  "version": "2.0.12",
+  "main": "./lib/index.js",
+  "keywords": [
+    "buffer",
+    "raw",
+    "binary",
+    "protocol",
+    "parser",
+    "reader",
+    "builder"
+  ],
+  "dependencies": {
+    "lodash": "^4.1.0",
+    "long": "^3.0.3",
+    "protocol-buffers-schema": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "chai": "^3.5.0",
+    "eslint": "^2.2.0",
+    "eslint-config-magictoolbox": "^0.0.2",
+    "istanbul": "^0.4.2"
+  },
+  "bugs": {
+    "url": "https://github.com/oleksiyk/binary-protocol/issues"
+  },
+  "scripts": {
+    "test": "make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/oleksiyk/binary-protocol.git"
+  },
+  "readmeFilename": "README.md",
+  "license": "MIT"
 }
-
