@@ -290,9 +290,10 @@ describe('Protocol buffers types', function () {
         expect(protocol.read(encoded).bytes('v').result.v).to.be.eql(null);
     });
 
-    it('bytes - null', function () {
+    it('bytes - null - equivalent to empty buffer', function () {
         var encoded = protocol.write().bytes(null).result;
-        encoded.should.be.eql(new Buffer(0));
+        encoded.should.be.eql(new Buffer([0x00]));
+        expect(protocol.read(encoded).bytes('v').result.v).to.be.eql(null);
     });
 
     it('bytes - not a buffer', function () {
