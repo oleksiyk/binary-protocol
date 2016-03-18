@@ -117,7 +117,7 @@ describe('Reader', function () {
                         .Int32BE('length');
 
                     for (i = 0; i < this.context.length; i++) {
-                        this.Int32BE('items[' + i + ']');
+                        this.Int32BE(['items', i]);
                     }
 
                     return this.context.items;
@@ -140,8 +140,8 @@ describe('Reader', function () {
                 }
             });
 
-            protocol.read(buffer).loopArray('items').result.should.be.eql({
-                items: [2, 3, 4]
+            protocol.read(buffer).loopArray('array').result.should.be.eql({
+                array: [2, 3, 4]
             });
         });
 
