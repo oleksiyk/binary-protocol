@@ -166,6 +166,7 @@ buffer.writeInt32BE(4, 12);
 All next 3 examples are essentialy identical:
 
 Read data with your own code:
+
 ```javascript
 protocol.define('customArray', {
     read: function () {
@@ -173,7 +174,7 @@ protocol.define('customArray', {
         this.Int32BE('length');
 
         for(i = 0; i<this.context.length; i++){
-            this.Int32BE('items[' + i + ']'); // yes, it works
+            this.Int32BE(['items', i]);
         }
 
         return this.context.items;
@@ -184,6 +185,7 @@ protocol.read(buffer).customArray('items').result; // => { items: [2, 3, 4] }
 ```
 
 Read with `.loop()` method by providing the length (loop count):
+
 ```javascript
 protocol.define('loopArray', {
     read: function () {
@@ -198,6 +200,7 @@ protocol.read(buffer).loopArray('items').result; // => { items: [2, 3, 4] }
 ```
 
 Read with `.loop()` method until the `end()` is called:
+
 ```javascript
 protocol.define('loopArrayEnd', {
     read: function () {
