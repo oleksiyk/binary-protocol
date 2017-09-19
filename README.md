@@ -23,7 +23,7 @@ You can build your own type definitions based on the following methods:
 * FloatLE
 * FloatBE
 * DoubleLE
-* DoubleB
+* DoubleBE
 
 Int64 support (using [long.js](https://github.com/dcodeIO/long.js)):
 * Int64BE
