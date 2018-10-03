@@ -18,15 +18,16 @@
     "builder"
   ],
   "dependencies": {
-    "lodash": "^4.1.0",
+    "lodash": "^4.17.1",
     "long": "^3.0.3",
     "protocol-buffers-schema": "^3.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
+    "mocha": "^3.1.2",
     "chai": "^3.5.0",
-    "eslint": "^2.2.0",
+    "eslint": "^2.13.1",
     "eslint-config-magictoolbox": "^0.0.2",
+    "eslint-plugin-react": "^6.10.3",
     "istanbul": "^0.4.2"
   },
   "bugs": {
